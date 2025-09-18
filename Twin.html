@@ -374,39 +374,39 @@
             <h3>Ability Damage</h3>
             
             <div class="damage-type">
-                <h4>Passive: Quick Draw</h4>
+                <h4>Passive: Gunslinger</h4>
                 <div class="damage-value" id="passive-damage">0</div>
-                <div class="ability-desc">After using an ability, next basic attack fires 2 additional shots</div>
+                <div class="ability-desc">After using an ability, next 2 basic attacks gain 40% increased Attack Speed</div>
             </div>
             
             <div class="damage-type">
-                <h4>Basic Attack</h4>
+                <h4>Basic Attack (2 projectiles)</h4>
                 <div class="damage-value" id="basic-damage">0</div>
-                <div class="ability-desc">Standard auto-attack damage</div>
+                <div class="ability-desc">Each projectile deals 30 + 47.5% Physical Power (on-hit effects at 50% effectiveness)</div>
             </div>
             
             <div class="damage-type">
-                <h4>Alternate: Grenade</h4>
+                <h4>Alternate: Vortex Grenade</h4>
                 <div class="damage-value" id="grenade-damage">0</div>
-                <div class="ability-desc">AOE explosion on impact</div>
+                <div class="ability-desc">Deals magical damage in an area and slows enemies</div>
             </div>
             
             <div class="damage-type">
-                <h4>Primary: Rapid Fire</h4>
-                <div class="damage-value" id="rapidfire-damage">0</div>
-                <div class="ability-desc">Rapidly fire multiple shots</div>
+                <h4>Primary: Vaporize</h4>
+                <div class="damage-value" id="vaporize-damage">0</div>
+                <div class="ability-desc">Fires two piercing projectiles that deal physical damage</div>
             </div>
             
             <div class="damage-type">
                 <h4>Secondary: Rocket Dash</h4>
                 <div class="damage-value" id="dash-damage">0</div>
-                <div class="ability-desc">Dash forward and fire rockets behind</div>
+                <div class="ability-desc">Dash ability with no direct damage</div>
             </div>
             
             <div class="damage-type">
-                <h4>Ultimate: Barrage</h4>
+                <h4>Ultimate: Ventilate</h4>
                 <div class="damage-value" id="ultimate-damage">0</div>
-                <div class="ability-desc">Unleash a massive barrage of missiles</div>
+                <div class="ability-desc">Unleashes a barrage of bullets over 3 seconds</div>
             </div>
             
             <div class="damage-type">
@@ -418,46 +418,258 @@
     </div>
 
     <script>
-        // Twinblast base stats per level
+        // Twinblast base stats per level (accurate values)
         const twinblastStats = {
-            1: { physicalPower: 52, attackSpeed: 0, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            2: { physicalPower: 55, attackSpeed: 5, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            3: { physicalPower: 59, attackSpeed: 10, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            4: { physicalPower: 64, attackSpeed: 15, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            5: { physicalPower: 70, attackSpeed: 20, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            6: { physicalPower: 77, attackSpeed: 25, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            7: { physicalPower: 85, attackSpeed: 30, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            8: { physicalPower: 94, attackSpeed: 35, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            9: { physicalPower: 104, attackSpeed: 40, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            10: { physicalPower: 115, attackSpeed: 45, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            11: { physicalPower: 127, attackSpeed: 50, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            12: { physicalPower: 140, attackSpeed: 55, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            13: { physicalPower: 154, attackSpeed: 60, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            14: { physicalPower: 169, attackSpeed: 65, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            15: { physicalPower: 185, attackSpeed: 70, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            16: { physicalPower: 202, attackSpeed: 75, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            17: { physicalPower: 220, attackSpeed: 80, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 },
-            18: { physicalPower: 239, attackSpeed: 85, criticalChance: 0, physicalPenetration: 0, lifesteal: 0, abilityHaste: 0 }
+            1: { 
+                physicalPower: 60, 
+                attackSpeed: 125, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 710,
+                maxMana: 310,
+                healthRegen: 0.9,
+                manaRegen: 1.4,
+                movementSpeed: 670
+            },
+            2: { 
+                physicalPower: 63.2, 
+                attackSpeed: 127, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 830,
+                maxMana: 355,
+                healthRegen: 1.05,
+                manaRegen: 1.52,
+                movementSpeed: 670
+            },
+            3: { 
+                physicalPower: 66.4, 
+                attackSpeed: 129, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 950,
+                maxMana: 400,
+                healthRegen: 1.2,
+                manaRegen: 1.64,
+                movementSpeed: 670
+            },
+            4: { 
+                physicalPower: 69.6, 
+                attackSpeed: 131, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1070,
+                maxMana: 445,
+                healthRegen: 1.35,
+                manaRegen: 1.76,
+                movementSpeed: 670
+            },
+            5: { 
+                physicalPower: 72.8, 
+                attackSpeed: 133, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1190,
+                maxMana: 490,
+                healthRegen: 1.5,
+                manaRegen: 1.88,
+                movementSpeed: 670
+            },
+            6: { 
+                physicalPower: 76.0, 
+                attackSpeed: 135, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1310,
+                maxMana: 535,
+                healthRegen: 1.65,
+                manaRegen: 2.0,
+                movementSpeed: 670
+            },
+            7: { 
+                physicalPower: 79.2, 
+                attackSpeed: 137, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1430,
+                maxMana: 580,
+                healthRegen: 1.8,
+                manaRegen: 2.12,
+                movementSpeed: 670
+            },
+            8: { 
+                physicalPower: 82.4, 
+                attackSpeed: 139, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1550,
+                maxMana: 625,
+                healthRegen: 1.95,
+                manaRegen: 2.24,
+                movementSpeed: 670
+            },
+            9: { 
+                physicalPower: 85.6, 
+                attackSpeed: 141, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1670,
+                maxMana: 670,
+                healthRegen: 2.1,
+                manaRegen: 2.36,
+                movementSpeed: 670
+            },
+            10: { 
+                physicalPower: 88.8, 
+                attackSpeed: 143, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1790,
+                maxMana: 715,
+                healthRegen: 2.25,
+                manaRegen: 2.48,
+                movementSpeed: 670
+            },
+            11: { 
+                physicalPower: 92.0, 
+                attackSpeed: 145, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1910,
+                maxMana: 760,
+                healthRegen: 2.4,
+                manaRegen: 2.6,
+                movementSpeed: 670
+            },
+            12: { 
+                physicalPower: 95.2, 
+                attackSpeed: 147, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2030,
+                maxMana: 805,
+                healthRegen: 2.55,
+                manaRegen: 2.72,
+                movementSpeed: 670
+            },
+            13: { 
+                physicalPower: 98.4, 
+                attackSpeed: 149, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2150,
+                maxMana: 850,
+                healthRegen: 2.7,
+                manaRegen: 2.84,
+                movementSpeed: 670
+            },
+            14: { 
+                physicalPower: 101.6, 
+                attackSpeed: 151, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2270,
+                maxMana: 895,
+                healthRegen: 2.85,
+                manaRegen: 2.96,
+                movementSpeed: 670
+            },
+            15: { 
+                physicalPower: 104.8, 
+                attackSpeed: 153, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2390,
+                maxMana: 940,
+                healthRegen: 3.0,
+                manaRegen: 3.08,
+                movementSpeed: 670
+            },
+            16: { 
+                physicalPower: 108.0, 
+                attackSpeed: 155, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2510,
+                maxMana: 985,
+                healthRegen: 3.15,
+                manaRegen: 3.2,
+                movementSpeed: 670
+            },
+            17: { 
+                physicalPower: 111.2, 
+                attackSpeed: 157, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2630,
+                maxMana: 1030,
+                healthRegen: 3.3,
+                manaRegen: 3.32,
+                movementSpeed: 670
+            },
+            18: { 
+                physicalPower: 114.4, 
+                attackSpeed: 159, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2750,
+                maxMana: 1075,
+                healthRegen: 3.45,
+                manaRegen: 3.44,
+                movementSpeed: 670
+            }
         };
 
-        // Ability scaling factors
+        // Ability scaling factors (accurate values)
         const abilityScaling = {
-            passive: 0.3,  // 30% of physical power
-            basic: 1.0,    // 100% of physical power
-            grenade: 0.7,  // 70% of physical power
-            rapidfire: 0.4, // 40% of physical power per shot (6 shots)
-            dash: 0.5,     // 50% of physical power per rocket (2 rockets)
-            ultimate: 0.8  // 80% of physical power per missile (10 missiles)
+            basic: 0.475,    // 47.5% of physical power per projectile (2 projectiles per attack)
+            grenade: 0.55,   // 55% of physical power
+            vaporize: 0.40,  // 40% of physical power per projectile (2 projectiles)
+            ultimate: 0.09   // 9% of physical power per bullet
         };
 
-        // Base ability damages
+        // Base ability damages (max level values)
         const baseDamage = {
-            passive: 10,
-            basic: 60,
-            grenade: 80,
-            rapidfire: 20,
-            dash: 50,
-            ultimate: 40
+            basic: 30,          // per projectile
+            grenade: 125,       // Vortex Grenade at max level
+            vaporize: 135,      // per projectile at max level
+            ultimate: 24        // per bullet at max level
         };
 
         // Items data (abbreviated for demonstration)
@@ -503,7 +715,7 @@
             { name: "CyberneticDrive", stats: { health: 300, magicalArmor: 45, baseHealthRegeneration: 100, abilityHaste: 10 }, effects: ["Executes low health minions and grants armor"] },
             { name: "Dawnstar", stats: { health: 300, baseHealthRegeneration: 100, physicalArmor: 25, abilityHaste: 10 }, effects: ["Reduces damage dealt by attackers"] },
             { name: "Deathstalker", stats: { physicalPower: 40, physicalPenetration: 5, attackSpeed: 25 }, effects: ["Shreds armor on hit and grants attack speed"] },
-            { name: "Demolisher", stats: { physicalPower: 35, criticalChance: 20 }, effects: ["Ignores portion of armor"] },
+            { name: "Demolifier", stats: { physicalPower: 35, criticalChance: 20 }, effects: ["Ignores portion of armor"] },
             { name: "DemonEdge", stats: { physicalPower: 40, physicalPenetration: 8, health: 200, abilityHaste: 10 }, effects: ["Grants movement speed and bonus damage"] },
             { name: "DiffusalCane", stats: { magicalPower: 35, magicalPenetration: 5 }, effects: ["Reduces target's magical armor"] },
             { name: "DivinePotion", stats: { health: 100, mana: 50 }, effects: ["Upgrades refillable potion"] },
@@ -626,7 +838,7 @@
             { name: "Salvation", stats: { physicalPower: 40, health: 375, tenacity: 20 }, effects: ["Grants shield and omnivamp"] },
             { name: "Sanctification", stats: { health: 120, baseHealthRegeneration: 50, goldPerSecond: 1.5 }, effects: ["Grants shield and tenacity to nearby heroes"] },
             { name: "SaphirsMantle", stats: { health: 180, physicalArmor: 8, magicalArmor: 5 }, effects: ["Increases size and max health temporarily"] },
-            { name: "ScaldingSceptre", stats: { magicalPower: 30 }, effects: ["Ignores portion of magical armor"] },
+            { name: "ScaldingSceptere", stats: { magicalPower: 30 }, effects: ["Ignores portion of magical armor"] },
             { name: "Scepter", stats: { magicalPower: 30 }, effects: ["Basic magical power item"] },
             { name: "SentinelCrest", stats: { health: 40, baseManaRegeneration: 25, goldPerSecond: 0.25 }, effects: ["Generates gold over time"] },
             { name: "Sentry", stats: {}, effects: ["Reveals nearby wards"] },
@@ -648,15 +860,15 @@
             { name: "SpiritBeads", stats: { mana: 150 }, effects: ["Basic mana item"] },
             { name: "SpiritOfAmir", stats: { magicalPower: 70, health: 175, magicalPenetration: 7, abilityHaste: 10 }, effects: ["Grants different bonuses in and out of jungle"] },
             { name: "SpiritShiv", stats: { physicalPower: 15, mana: 200 }, effects: ["Basic physical power and mana item"] },
-            { name: "StalwartGauntlets", stats: { health: 200, baseHealthRegeneration: 50 }, effects: ["Basic health and health regeneration item"] },
+            { name: "StalwartGauntlets", stats: { health: 极速战靴", health: 200, baseHealthRegeneration: 50 }, effects: ["Basic health and health regeneration item"] },
             { name: "StaminaTonic", stats: { health: 120, abilityHaste: 15 }, effects: ["Temporarily increases health and ability haste"] },
             { name: "StealthWard", stats: {}, effects: ["Places invisible ward"] },
             { name: "SteelMail", stats: { physicalArmor: 30 }, effects: ["Basic physical armor item"] },
             { name: "StoneOfStrength", stats: { physicalPower: 20, health: 150 }, effects: ["Basic physical power and health item"] },
             { name: "Stonewall", stats: { health: 275, physicalArmor: 65 }, effects: ["Mitigates physical damage"] },
-            { name: "StormBreaker", stats: { physicalPower: 40, attackSpeed: 35 }, effects: ["Releases chain lightning on empowered basic attack"] },
+            { name: "StormBreaker", stats: { physicalPower: 极速战靴", attackSpeed: 35 }, effects: ["Releases chain lightning on empowered basic attack"] },
             { name: "StrengthTonic", stats: { physicalPower: 30, omnivamp: 10 }, effects: ["Temporarily increases physical power and omnivamp"] },
-            { name: "SyonicEcho", stats: { physicalPower: 45, physicalPenetration: 7, abilityHaste: 10, lifesteal: 12 }, effects: ["Grants attack speed and resets basic attack cooldown"] },
+            { name: "SyonicEcho", stats: { physicalPower: 45, physicalPenetration: 7, abilityHaste: 极速战靴", lifesteal: 12 }, effects: ["Grants attack speed and resets basic attack cooldown"] },
             { name: "TaintedBlade", stats: { physicalPower: 40, health: 275, abilityHaste: 15 }, effects: ["Reduces target's healing and increases damage taken"] },
             { name: "TaintedCharm", stats: { health: 375, baseManaRegeneration: 125, abilityHaste: 10, tenacity: 20 }, effects: ["Reduces target's healing and slows them"] },
             { name: "TaintedGuard", stats: { health: 300, physicalArmor: 45, abilityHaste: 8 }, effects: ["Reduces attacker's healing and applies bleed"] },
@@ -671,7 +883,7 @@
             { name: "Terminus", stats: { physicalPower: 55, criticalChance: 20, lifesteal: 15 }, effects: ["Converts excess healing into shield"] },
             { name: "ThePerforator", stats: { physicalPower: 40, physicalPenetration: 6, abilityHaste: 15 }, effects: ["Slows targets and ignores portion of armor"] },
             { name: "TitanCrest", stats: { health: 60, physicalArmor: 4, magicalArmor: 2 }, effects: ["Evolves into Goliath Crest"] },
-            { name: "TimeFluxBand", stats: { magicalPower: 30, mana: 200, abilityHaste: 8 }, effects: ["Marks location and teleports back after duration"] },
+            { name: "TimeFluxBand", stats: { magicalPower: 极速战靴", mana: 200, abilityHaste: 8 }, effects: ["Marks location and teleports back after duration"] },
             { name: "Timewarp", stats: { magicalPower: 80, baseManaRegeneration: 175, abilityHaste: 15 }, effects: ["Reduces non-ultimate cooldowns"] },
             { name: "Tranquility", stats: { health: 100, baseManaRegeneration: 40, goldPerSecond: 1.5 }, effects: ["Heals and grants damage mitigation to nearby heroes"] },
             { name: "TruesilverBracelet", stats: { magicalPower: 50, health: 200, baseManaRegeneration: 75 }, effects: ["Grants shield and CC immunity"] },
@@ -886,27 +1098,38 @@
             }
             
             // Calculate ability damages
-            const passiveDamage = Math.round(baseDamage.passive + (totalStats.physicalPower * abilityScaling.passive));
-            const basicDamage = Math.round(baseDamage.basic + (totalStats.physicalPower * abilityScaling.basic));
+            // Basic Attack (2 projectiles)
+            const basicDamage = Math.round(2 * (baseDamage.basic + (totalStats.physicalPower * abilityScaling.basic)));
+            
+            // Vortex Grenade
             const grenadeDamage = Math.round(baseDamage.grenade + (totalStats.physicalPower * abilityScaling.grenade));
-            const rapidfireDamage = Math.round((baseDamage.rapidfire + (totalStats.physicalPower * abilityScaling.rapidfire)) * 6); // 6 shots
-            const dashDamage = Math.round((baseDamage.dash + (totalStats.physicalPower * abilityScaling.dash)) * 2); // 2 rockets
-            const ultimateDamage = Math.round((baseDamage.ultimate + (totalStats.physicalPower * abilityScaling.ultimate)) * 10); // 10 missiles
+            
+            // Vaporize (2 projectiles)
+            const vaporizeDamage = Math.round(2 * (baseDamage.vaporize + (totalStats.physicalPower * abilityScaling.vaporize)));
+            
+            // Rocket Dash (no damage)
+            const dashDamage = 0;
+            
+            // Ventilate (Ultimate)
+            const bulletCount = 30 + (0.1 * totalStats.attackSpeed);
+            const ultimateDamage = Math.round(bulletCount * (baseDamage.ultimate + (totalStats.physicalPower * abilityScaling.ultimate)));
             
             // Estimate on-hit damage (simplified)
             const onHitDamage = Math.round(totalStats.physicalPower * 0.15);
             
             // Update damage displays
-            document.getElementById('passive-damage').textContent = passiveDamage;
             document.getElementById('basic-damage').textContent = basicDamage;
             document.getElementById('grenade-damage').textContent = grenadeDamage;
-            document.getElementById('rapidfire-damage').textContent = rapidfireDamage;
+            document.getElementById('vaporize-damage').textContent = vaporizeDamage;
             document.getElementById('dash-damage').textContent = dashDamage;
             document.getElementById('ultimate-damage').textContent = ultimateDamage;
             document.getElementById('onhit-damage').textContent = onHitDamage;
+            
+            // Passive doesn't deal direct damage, but shows the attack speed boost
+            document.getElementById('passive-damage').textContent = "40% AS for 2 attacks";
         }
 
-        // Initialize the page 1
+        // Initialize the page
         window.onload = function() {
             populateItemSelectors();
             calculateDamage(); // Calculate with default values
