@@ -692,3 +692,697 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TwinBlast Damage Calculator</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --background: #f5f5f5;
+            --card-bg: #ffffff;
+            --text: #333333;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 1000px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .item-selector {
+            grid-column: 1 / -1;
+        }
+        
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .item-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .item-slot {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .item-slot label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--secondary);
+        }
+        
+        select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+            font-size: 14px;
+        }
+        
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f6f9fc, #e6f3ff);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-name {
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            color: var(--primary);
+        }
+        
+        .abilities {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .ability-card {
+            background: linear-gradient(135deg, #f6f9fc, #e6f3ff);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .ability-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .ability-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .ability-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--secondary);
+        }
+        
+        .ability-desc {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .ability-damage {
+            background-color: rgba(231, 76, 60, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .damage-value {
+            font-size: 20px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .level-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .level-selector label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .level-slider {
+            flex-grow: 1;
+            margin: 0 15px;
+        }
+        
+        .level-display {
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--primary);
+            min-width: 30px;
+            text-align: center;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .item-effects {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .effect-item {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>TwinBlast Damage Calculator</h1>
+        <p>Select items and level to calculate TwinBlast's attributes and ability damage</p>
+    </header>
+    
+    <div class="container">
+        <div class="card item-selector">
+            <h2>Item Selection</h2>
+            <div class="item-grid">
+                <div class="item-slot">
+                    <label for="crest-slot">Crest Slot</label>
+                    <select id="crest-slot">
+                        <option value="">Select a Crest</option>
+                        <!-- Crest items will be populated here -->
+                    </select>
+                </div>
+                <div class="item-slot">
+                    <label for="item-slot-1">Item Slot 1</label>
+                    <select id="item-slot-1">
+                        <option value="">Select an Item</option>
+                        <!-- Regular items will be populated here -->
+                    </select>
+                </div>
+                <div class="item-slot">
+                    <label for="item-slot-2">Item Slot 2</label>
+                    <select id="item-slot-2">
+                        <option value="">Select an Item</option>
+                        <!-- Regular items will be populated here -->
+                    </select>
+                </div>
+                <div class="item-slot">
+                    <label for="item-slot-3">Item Slot 3</label>
+                    <select id="item-slot-3">
+                        <option value="">Select an Item</option>
+                        <!-- Regular items will be populated here -->
+                    </select>
+                </div>
+                <div class="item-slot">
+                    <label for="item-slot-4">Item Slot 4</label>
+                    <select id="item-slot-4">
+                        <option value="">Select an Item</option>
+                        <!-- Regular items will be populated here -->
+                    </select>
+                </div>
+                <div class="item-slot">
+                    <label for="item-slot-5">Item Slot 5</label>
+                    <select id="item-slot-5">
+                        <option value="">Select an Item</option>
+                        <!-- Regular items will be populated here -->
+                    </select>
+                </div>
+                <div class="item-slot">
+                    <label for="item-slot-6">Item Slot 6</label>
+                    <select id="item-slot-6">
+                        <option value="">Select an Item</option>
+                        <!-- Regular items will be populated here -->
+                    </select>
+                </div>
+                <div class="item-slot">
+                    <label for="level-slot">Level</label>
+                    <div class="level-selector">
+                        <label for="level">Level:</label>
+                        <input type="range" id="level" class="level-slider" min="1" max="18" value="1">
+                        <span id="level-display" class="level-display">1</span>
+                    </div>
+                </div>
+            </div>
+            <button id="calculate-btn">Calculate Damage</button>
+        </div>
+        
+        <div class="card">
+            <h2>Attributes</h2>
+            <div class="stats-display" id="stats-container">
+                <!-- Stats will be populated here -->
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Basic Attack & Passive</h2>
+            <div class="abilities">
+                <div class="ability-card">
+                    <div class="ability-header">
+                        <div class="ability-icon">P</div>
+                        <div class="ability-name">Gunslinger (Passive)</div>
+                    </div>
+                    <div class="ability-desc">
+                        Casting an ability will cause TwinBlast's next 2 basic attacks within 4s to benefit from 40% increased Total Attack Speed.
+                    </div>
+                    <div class="ability-damage">
+                        Attack Speed Bonus: <span class="damage-value" id="passive-value">40%</span>
+                    </div>
+                </div>
+                
+                <div class="ability-card">
+                    <div class="ability-header">
+                        <div class="ability-icon">LMB</div>
+                        <div class="ability-name">LUNARI (Basic Attack)</div>
+                    </div>
+                    <div class="ability-desc">
+                        Basic Attack that fires two projectiles, each dealing physical damage and applying on-hit effects at 50% effectiveness.
+                    </div>
+                    <div class="ability-damage">
+                        Damage: <span class="damage-value" id="basic-attack-value">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Abilities</h2>
+            <div class="abilities">
+                <div class="ability-card">
+                    <div class="ability-header">
+                        <div class="ability-icon">RMB</div>
+                        <div class="ability-name">Vortex Grenade</div>
+                    </div>
+                    <div class="ability-desc">
+                        Launch a grenade that explodes upon contact, dealing magical damage in a small area and slowing by 20% for 1s.
+                    </div>
+                    <div class="ability-damage">
+                        Damage: <span class="damage-value" id="rmb-value">0</span>
+                    </div>
+                </div>
+                
+                <div class="ability-card">
+                    <div class="ability-header">
+                        <div class="ability-icon">Q</div>
+                        <div class="ability-name">Vaporize</div>
+                    </div>
+                    <div class="ability-desc">
+                        Fires two superheated piercing projectiles, each dealing physical damage and applying on-hit effects to all enemies hit at 65% effectiveness.
+                    </div>
+                    <div class="ability-damage">
+                        Damage: <span class="damage-value" id="q-value">0</span>
+                    </div>
+                </div>
+                
+                <div class="ability-card">
+                    <div class="ability-header">
+                        <div class="ability-icon">E</div>
+                        <div class="ability-name">Rocket Dash</div>
+                    </div>
+                    <div class="ability-desc">
+                        Dash in the current movement direction. Passive: Dealing damage to enemies reduces cooldown.
+                    </div>
+                    <div class="ability-damage">
+                        Cooldown: <span class="damage-value" id="e-value">0</span>s
+                    </div>
+                </div>
+                
+                <div class="ability-card">
+                    <div class="ability-header">
+                        <div class="ability-icon">R</div>
+                        <div class="ability-name">Ventilate</div>
+                    </div>
+                    <div class="ability-desc">
+                        Transform guns into fully automatic machine guns, unleashing a barrage of bullets over 3s. Can critically strike at 75% effectiveness.
+                    </div>
+                    <div class="ability-damage">
+                        Total Damage: <span class="damage-value" id="r-value">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Item Effects</h2>
+            <div id="item-effects-container">
+                <!-- Item effects will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wait for the DOM to be fully loaded before executing JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // TwinBlast base stats
+            const twinblastBaseStats = {
+                physicalPower: { base: 60, perLevel: 3.2 },
+                attackSpeed: { base: 125, perLevel: 2 },
+                attackTime: 1.4,
+                physicalArmor: { base: 28, perLevel: 4.2 },
+                magicalArmor: { base: 27, perLevel: 1.1 },
+                maxHealth: { base: 710, perLevel: 120 },
+                maxMana: { base: 310, perLevel: 45 },
+                healthRegen: { base: 0.9, perLevel: 0.15 },
+                manaRegen: { base: 1.4, perLevel: 0.12 },
+                movementSpeed: 670
+            };
+
+            // TwinBlast abilities
+            const twinblastAbilities = {
+                basicAttack: {
+                    baseDamage: 30,
+                    scaling: 0.475, // 47.5%
+                    onHitEffectiveness: 0.5
+                },
+                rmb: {
+                    baseDamage: [45, 65, 85, 105, 125],
+                    scaling: 0.55, // 55%
+                    isMagical: true
+                },
+                q: {
+                    baseDamage: [55, 75, 95, 115, 135],
+                    physicalScaling: 0.4, // 40%
+                    magicalScaling: 0.6, // 60%
+                    onHitEffectiveness: 0.65
+                },
+                e: {
+                    cooldown: [16, 14.5, 13, 11.5, 10]
+                },
+                r: {
+                    baseDamage: [12, 18, 24],
+                    bulletsBase: 30,
+                    attackSpeedScaling: 0.1, // 10% of total attack speed
+                    physicalScaling: 0.09, // 9%
+                    magicalScaling: 0.09, // 9%
+                    critEffectiveness: 0.75 // 75%
+                }
+            };
+
+            // Sample items data (simplified for demonstration)
+            const items = {
+                crest: [
+                    { id: "rogue-crest", name: "Rogue Crest", stats: { physicalPower: 3, physicalPenetration: 2, abilityHaste: 4 } },
+                    { id: "warlock-crest", name: "Warlock Crest", stats: { magicalPower: 15, health: 80, abilityHaste: 6 } },
+                    { id: "sharpshooter-crest", name: "Sharpshooter Crest", stats: { physicalPower: 8, attackSpeed: 10, lifesteal: 5 } },
+                    { id: "champion-crest", name: "Champion Crest", stats: { physicalPower: 8, health: 75, omnivamp: 3 } },
+                    { id: "assassin-crest", name: "Assassin Crest", stats: { physicalPower: 6, physicalPenetration: 3, abilityHaste: 6 } },
+                    { id: "wizard-crest", name: "Wizard Crest", stats: { magicalPower: 15, mana: 125, abilityHaste: 6 } },
+                    { id: "keeper-crest", name: "Keeper Crest", stats: { health: 80, manaRegen: 35, goldPerSecond: 0.35 } },
+                    { id: "warden-crest", name: "Warden Crest", stats: { health: 80, healthRegen: 30, goldPerSecond: 0.35 } },
+                    { id: "goliath-crest", name: "Goliath Crest", stats: { health: 90, physicalArmor: 6, magicalArmor: 3 } }
+                ],
+                regular: [
+                    { id: "vanquisher", name: "Vanquisher", stats: { physicalPower: 45, physicalPenetration: 9, criticalChance: 20 } },
+                    { id: "imperator", name: "Imperator", stats: { physicalPower: 55, criticalChance: 20 } },
+                    { id: "demolisher", name: "Demolisher", stats: { physicalPower: 35, criticalChance: 20 } },
+                    { id: "sky-splitter", name: "Sky Splitter", stats: { physicalPower: 35, attackSpeed: 25, lifesteal: 7 } },
+                    { id: "terminus", name: "Terminus", stats: { physicalPower: 55, criticalChance: 20, lifesteal: 15 } },
+                    { id: "ashbringer", name: "Ashbringer", stats: { physicalPower: 40, attackSpeed: 25, criticalChance: 20, abilityHaste: 10 } },
+                    { id: "painweaver", name: "Painweaver", stats: { physicalPower: 50, physicalPenetration: 8, movementSpeed: 3 } },
+                    { id: "dread", name: "Dread", stats: { physicalPower: 45, physicalPenetration: 8, magicalArmor: 35 } },
+                    { id: "tyranny", name: "Tyranny", stats: { physicalPower: 40, health: 400, abilityHaste: 10 } },
+                    { id: "berserkers-axe", name: "Berserker's Axe", stats: { physicalPower: 40, health: 300, abilityHaste: 15, movementSpeed: 3 } }
+                ]
+            };
+
+            // Populate dropdowns with items
+            function populateItemDropdowns() {
+                const crestSelect = document.getElementById('crest-slot');
+                items.crest.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.name;
+                    crestSelect.appendChild(option);
+                });
+                
+                for (let i = 1; i <= 6; i++) {
+                    const select = document.getElementById(`item-slot-${i}`);
+                    items.regular.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.id;
+                        option.textContent = item.name;
+                        select.appendChild(option);
+                    });
+                }
+            }
+            
+            // Calculate stats based on level and items
+            function calculateStats(level, selectedItems) {
+                const stats = {
+                    physicalPower: twinblastBaseStats.physicalPower.base + (twinblastBaseStats.physicalPower.perLevel * (level - 1)),
+                    attackSpeed: twinblastBaseStats.attackSpeed.base + (twinblastBaseStats.attackSpeed.perLevel * (level - 1)),
+                    physicalArmor: twinblastBaseStats.physicalArmor.base + (twinblastBaseStats.physicalArmor.perLevel * (level - 1)),
+                    magicalArmor: twinblastBaseStats.magicalArmor.base + (twinblastBaseStats.magicalArmor.perLevel * (level - 1)),
+                    maxHealth: twinblastBaseStats.maxHealth.base + (twinblastBaseStats.maxHealth.perLevel * (level - 1)),
+                    maxMana: twinblastBaseStats.maxMana.base + (twinblastBaseStats.maxMana.perLevel * (level - 1)),
+                    healthRegen: twinblastBaseStats.healthRegen.base + (twinblastBaseStats.healthRegen.perLevel * (level - 1)),
+                    manaRegen: twinblastBaseStats.manaRegen.base + (twinblastBaseStats.manaRegen.perLevel * (level - 1)),
+                    movementSpeed: twinblastBaseStats.movementSpeed,
+                    physicalPenetration: 0,
+                    criticalChance: 0,
+                    lifesteal: 0,
+                    omnivamp: 0,
+                    abilityHaste: 0
+                };
+                
+                // Apply item stats
+                selectedItems.forEach(itemId => {
+                    let item = null;
+                    
+                    // Check if it's a crest item
+                    items.crest.forEach(crest => {
+                        if (crest.id === itemId) item = crest;
+                    });
+                    
+                    // Check if it's a regular item
+                    if (!item) {
+                        items.regular.forEach(regular => {
+                            if (regular.id === itemId) item = regular;
+                        });
+                    }
+                    
+                    if (item && item.stats) {
+                        for (const [stat, value] of Object.entries(item.stats)) {
+                            if (stats.hasOwnProperty(stat)) {
+                                stats[stat] += value;
+                            }
+                        }
+                    }
+                });
+                
+                return stats;
+            }
+            
+            // Calculate ability damages
+            function calculateAbilityDamages(stats, level) {
+                // Determine ability levels based on character level
+                const rmbLevel = Math.min(5, Math.max(1, Math.floor(level / 3)));
+                const qLevel = Math.min(5, Math.max(1, Math.floor((level + 1) / 3)));
+                const eLevel = Math.min(5, Math.max(1, Math.floor((level + 2) / 3)));
+                const rLevel = Math.min(3, Math.max(1, Math.floor((level + 3) / 5)));
+                
+                const damages = {
+                    basicAttack: twinblastAbilities.basicAttack.baseDamage + 
+                                (stats.physicalPower * twinblastAbilities.basicAttack.scaling),
+                    rmb: twinblastAbilities.rmb.baseDamage[rmbLevel - 1] + 
+                         (stats.physicalPower * twinblastAbilities.rmb.scaling),
+                    q: twinblastAbilities.q.baseDamage[qLevel - 1] + 
+                       (stats.physicalPower * twinblastAbilities.q.physicalScaling),
+                    e: twinblastAbilities.e.cooldown[eLevel - 1],
+                    r: 0
+                };
+                
+                // Calculate ultimate damage
+                if (rLevel > 0) {
+                    const bullets = twinblastAbilities.r.bulletsBase + (stats.attackSpeed * twinblastAbilities.r.attackSpeedScaling);
+                    const damagePerBullet = twinblastAbilities.r.baseDamage[rLevel - 1] + 
+                                           (stats.physicalPower * twinblastAbilities.r.physicalScaling);
+                    damages.r = bullets * damagePerBullet;
+                }
+                
+                return damages;
+            }
+            
+            // Update the UI with calculated stats and damages
+            function updateUI(stats, damages) {
+                // Update stats display
+                const statsContainer = document.getElementById('stats-container');
+                statsContainer.innerHTML = '';
+                
+                for (const [stat, value] of Object.entries(stats)) {
+                    const statCard = document.createElement('div');
+                    statCard.className = 'stat-card';
+                    
+                    const statName = document.createElement('div');
+                    statName.className = 'stat-name';
+                    statName.textContent = formatStatName(stat);
+                    
+                    const statValue = document.createElement('div');
+                    statValue.className = 'stat-value';
+                    statValue.textContent = formatStatValue(stat, value);
+                    
+                    statCard.appendChild(statName);
+                    statCard.appendChild(statValue);
+                    statsContainer.appendChild(statCard);
+                }
+                
+                // Update ability damages
+                document.getElementById('basic-attack-value').textContent = Math.round(damages.basicAttack);
+                document.getElementById('rmb-value').textContent = Math.round(damages.rmb);
+                document.getElementById('q-value').textContent = Math.round(damages.q);
+                document.getElementById('e-value').textContent = damages.e;
+                document.getElementById('r-value').textContent = Math.round(damages.r);
+            }
+            
+            // Format stat names for display
+            function formatStatName(stat) {
+                const nameMap = {
+                    physicalPower: "Physical Power",
+                    attackSpeed: "Attack Speed",
+                    physicalArmor: "Physical Armor",
+                    magicalArmor: "Magical Armor",
+                    maxHealth: "Max Health",
+                    maxMana: "Max Mana",
+                    healthRegen: "Health Regen",
+                    manaRegen: "Mana Regen",
+                    movementSpeed: "Movement Speed",
+                    physicalPenetration: "Physical Penetration",
+                    criticalChance: "Critical Chance",
+                    lifesteal: "Lifesteal",
+                    omnivamp: "Omnivamp",
+                    abilityHaste: "Ability Haste"
+                };
+                
+                return nameMap[stat] || stat;
+            }
+            
+            // Format stat values for display
+            function formatStatValue(stat, value) {
+                if (stat === 'attackSpeed') return value + '%';
+                if (stat === 'healthRegen' || stat === 'manaRegen') return value.toFixed(1) + '/s';
+                if (stat === 'criticalChance' || stat === 'lifesteal' || stat === 'omnivamp') return value + '%';
+                return Math.round(value);
+            }
+            
+            // Get selected items from all slots
+            function getSelectedItems() {
+                const selectedItems = [];
+                
+                // Get crest item
+                const crestSelect = document.getElementById('crest-slot');
+                if (crestSelect.value) selectedItems.push(crestSelect.value);
+                
+                // Get regular items
+                for (let i = 1; i <= 6; i++) {
+                    const select = document.getElementById(`item-slot-${i}`);
+                    if (select.value) selectedItems.push(select.value);
+                }
+                
+                return selectedItems;
+            }
+            
+            // Initialize the page
+            function init() {
+                populateItemDropdowns();
+                
+                // Set up event listeners
+                document.getElementById('calculate-btn').addEventListener('click', calculate);
+                
+                const levelSlider = document.getElementById('level');
+                const levelDisplay = document.getElementById('level-display');
+                
+                levelSlider.addEventListener('input', function() {
+                    levelDisplay.textContent = this.value;
+                });
+                
+                // Calculate with default values
+                calculate();
+            }
+            
+            // Calculate and update everything
+            function calculate() {
+                const level = parseInt(document.getElementById('level').value);
+                const selectedItems = getSelectedItems();
+                
+                const stats = calculateStats(level, selectedItems);
+                const damages = calculateAbilityDamages(stats, level);
+                
+                updateUI(stats, damages);
+            }
+            
+            // Initialize the calculator
+            init();
+        });
+    </script>
+</body>
+</html>
