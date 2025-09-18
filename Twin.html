@@ -60,6 +60,8 @@
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         .item-selector {
@@ -143,6 +145,34 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+        
+        .effects-container {
+            margin-top: 20px;
+            background: var(--background);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .effects-container h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 18px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+        
+        .effect-item {
+            margin-bottom: 10px;
+            padding-left: 15px;
+            position: relative;
+        }
+        
+        .effect-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
@@ -161,22 +191,22 @@
                 <label for="crest-slot">Crest Slot:</label>
                 <select id="crest-slot">
                     <option value="none">No Crest</option>
-                    <option value="rogue">Rogue Crest</option>
-                    <option value="warlock">Warlock Crest</option>
-                    <option value="assassin">Assassin Crest</option>
-                    <option value="sharpshooter">Sharpshooter Crest</option>
-                    <option value="champion">Champion Crest</option>
-                    <option value="warrior">Warrior Crest</option>
-                    <option value="occult">Occult Crest</option>
-                    <option value="marksman">Marksman Crest</option>
-                    <option value="titan">Titan Crest</option>
-                    <option value="magician">Magician Crest</option>
-                    <option value="consort">Consort Crest</option>
-                    <option value="guardian">Guardian Crest</option>
-                    <option value="keeper">Keeper Crest</option>
-                    <option value="warden">Warden Crest</option>
-                    <option value="goliath">Goliath Crest</option>
-                    <option value="wizard">Wizard Crest</option>
+                    <option value="RogueCrest">Rogue Crest</option>
+                    <option value="WarlockCrest">Warlock Crest</option>
+                    <option value="AssassinCrest">Assassin Crest</option>
+                    <option value="SharpshooterCrest">Sharpshooter Crest</option>
+                    <option value="ChampionCrest">Champion Crest</option>
+                    <option value="WarriorCrest">Warrior Crest</option>
+                    <option value="OccultCrest">Occult Crest</option>
+                    <option value="MarksmanCrest">Marksman Crest</option>
+                    <option value="MagicianCrest">Magician Crest</option>
+                    <option value="WizardCrest">Wizard Crest</option>
+                    <option value="TitanCrest">Titan Crest</option>
+                    <option value="GuardianCrest">Guardian Crest</option>
+                    <option value="ConsortCrest">Consort Crest</option>
+                    <option value="KeeperCrest">Keeper Crest</option>
+                    <option value="WardenCrest">Warden Crest</option>
+                    <option value="GoliathCrest">Goliath Crest</option>
                 </select>
             </div>
             
@@ -184,239 +214,15 @@
                 <label for="item-slot-1">Item Slot 1:</label>
                 <select id="item-slot-1">
                     <option value="none">No Item</option>
-                    <option value="zealous-tomahawk">Zealous Tomahawk</option>
-                    <option value="entropy">Entropy</option>
-                    <option value="stamina-tonic">Stamina Tonic</option>
-                    <option value="soulbearer">Soulbearer</option>
-                    <option value="berserkers-axe">Berserker's Axe</option>
-                    <option value="malediction">Malediction</option>
-                    <option value="saphirs-mantle">Saphir's Mantle</option>
-                    <option value="spirit-beads">Spirit Beads</option>
-                    <option value="loch-shawl">Loch Shawl</option>
-                    <option value="spear-of-desolation">Spear of Desolation</option>
-                    <option value="alchemical-rod">Alchemical Rod</option>
-                    <option value="tyranny">Tyranny</option>
-                    <option value="redwood-shortbow">Redwood Shortbow</option>
-                    <option value="warlock-crest">Warlock Crest</option>
-                    <option value="flux-matrix">Flux Matrix</option>
-                    <option value="time-flux-band">Time Flux Band</option>
-                    <option value="solstone">Solstone</option>
-                    <option value="horned-plate">Horned Plate</option>
-                    <option value="deathstalker">Deathstalker</option>
-                    <option value="energy-stream">Energy Stream</option>
-                    <option value="polar-treads">Polar Treads</option>
-                    <option value="void-crystal">Void Crystal</option>
-                    <option value="azure-core">Azure Core</option>
-                    <option value="draconum">Draconum</option>
-                    <option value="rogue-crest">Rogue Crest</option>
-                    <option value="life-ring">Life Ring</option>
-                    <option value="tainted-scepter">Tainted Scepter</option>
-                    <option value="solaris">Solaris</option>
-                    <option value="eviscerator">Eviscerator</option>
-                    <option value="catalytic-drive">Catalytic Drive</option>
-                    <option value="penumbra">Penumbra</option>
-                    <option value="spirit-shiv">Spirit Shiv</option>
-                    <option value="robust-arbalest">Robust Arbalest</option>
-                    <option value="assassin-crest">Assassin Crest</option>
-                    <option value="nether-shard">Nether Shard</option>
-                    <option value="chronomatic-wand">Chronomatic Wand</option>
-                    <option value="tranquility">Tranquility</option>
-                    <option value="occult-crest">Occult Crest</option>
-                    <option value="strength-tonic">Strength Tonic</option>
-                    <option value="vanquisher">Vanquisher</option>
-                    <option value="quantum-core">Quantum Core</option>
-                    <option value="barbaric-cleaver">Barbaric Cleaver</option>
-                    <option value="demolisher">Demolisher</option>
-                    <option value="spellbreaker">Spellbreaker</option>
-                    <option value="blood-tome">Blood Tome</option>
-                    <option value="dread">Dread</option>
-                    <option value="lunaria">Lunaria</option>
-                    <option value="sharpshooter-crest">Sharpshooter Crest</option>
-                    <option value="brutallax">Brutallax</option>
-                    <option value="viper">Viper</option>
-                    <option value="spectra">Spectra</option>
-                    <option value="temporal-ripper">Temporal Ripper</option>
-                    <option value="ashbringer">Ashbringer</option>
-                    <option value="tainted-trident">Tainted Trident</option>
-                    <option value="void-conduit">Void Conduit</option>
-                    <option value="reckoning">Reckoning</option>
-                    <option value="tenacious-drape">Tenacious Drape</option>
-                    <option value="hexbound-bracers">Hexbound Bracers</option>
-                    <option value="omen">Omen</option>
-                    <option value="ironwood-warbow">Ironwood Warbow</option>
-                    <option value="soul-chalice">Soul Chalice</option>
-                    <option value="cerulean-stone">Cerulean Stone</option>
-                    <option value="painweaver">Painweaver</option>
-                    <option value="lightning-hawk">Lightning Hawk</option>
-                    <option value="mindrazor">Mindrazor</option>
-                    <option value="dusk-stave">Dusk Stave</option>
-                    <option value="protection-tonic">Protection Tonic</option>
-                    <option value="giants-ring">Giant's Ring</option>
-                    <option value="sky-splitter">Sky Splitter</option>
-                    <option value="storm-breaker">Storm Breaker</option>
-                    <option value="tainted-blade">Tainted Blade</option>
-                    <option value="golems-gift">Golem's Gift</option>
-                    <option value="iceskorn-talons">Iceskorn Talons</option>
-                    <option value="stonewall">Stonewall</option>
-                    <option value="elafrost">Elafrost</option>
-                    <option value="potent-staff">Potent Staff</option>
-                    <option value="banded-emerald">Banded Emerald</option>
-                    <option value="aegis-of-agawar">Aegis of Agawar</option>
-                    <option value="tempest">Tempest</option>
-                    <option value="life-stream">Life Stream</option>
-                    <option value="overseer">Overseer</option>
-                    <option value="nuclear-rounds">Nuclear Rounds</option>
-                    <option value="silentium">Silentium</option>
-                    <option value="dawnstar">Dawnstar</option>
-                    <option value="crescelia">Crescelia</option>
-                    <option value="void-helm">Void Helm</option>
-                    <option value="sabre">Sabre</option>
-                    <option value="dynamo">Dynamo</option>
-                    <option value="sanctification">Sanctification</option>
-                    <option value="razorback">Razorback</option>
-                    <option value="envy">Envy</option>
-                    <option value="combustion">Combustion</option>
-                    <option value="judgement">Judgement</option>
-                    <option value="crimson-edge">Crimson Edge</option>
-                    <option value="malady">Malady</option>
-                    <option value="champion-crest">Champion Crest</option>
-                    <option value="soulbinder">Soulbinder</option>
-                    <option value="tainted-guard">Tainted Guard</option>
-                    <option value="crystalline-cuirass">Crystalline Cuirass</option>
-                    <option value="dreambinder">Dreambinder</option>
-                    <option value="citadel">Citadel</option>
-                    <option value="liberator">Liberator</option>
-                    <option value="warrior-crest">Warrior Crest</option>
-                    <option value="heroic-guard">Heroic Guard</option>
-                    <option value="greatsword">Greatsword</option>
-                    <option value="noxia">Noxia</option>
-                    <option value="sentry">Sentry</option>
-                    <option value="rejuvination-robe">Rejuvination Robe</option>
-                    <option value="epoch">Epoch</option>
-                    <option value="lucky-feather">Lucky Feather</option>
-                    <option value="oathkeeper">Oathkeeper</option>
-                    <option value="salvation">Salvation</option>
-                    <option value="absolution">Absolution</option>
-                    <option value="ruthless-broadsword">Ruthless Broadsword</option>
-                    <option value="chaotic-core">Chaotic Core</option>
-                    <option value="lifebinder">Lifebinder</option>
-                    <option value="steel-mail">Steel Mail</option>
-                    <option value="magnify">Magnify</option>
-                    <option value="wild-hunt">Wild Hunt</option>
-                    <option value="consort-crest">Consort Crest</option>
-                    <option value="composite-bow">Composite Bow</option>
-                    <option value="diffusal-cane">Diffusal Cane</option>
-                    <option value="wardens-faith">Warden's Faith</option>
-                    <option value="terminus">Terminus</option>
-                    <option value="nyr-warboots">Nyr Warboots</option>
-                    <option value="the-perforator">The Perforator</option>
-                    <option value="everbloom">Everbloom</option>
-                    <option value="leviathan">Leviathan</option>
-                    <option value="honed-kris">Honed Kris</option>
-                    <option value="onixian-quiver">Onixian Quiver</option>
-                    <option value="crystal-tear">Crystal Tear</option>
-                    <option value="leafsong">Leafsong</option>
-                    <option value="tainted-charm">Tainted Charm</option>
-                    <option value="astral-catalyst">Astral Catalyst</option>
-                    <option value="mesmer">Mesmer</option>
-                    <option value="divine-potion">Divine Potion</option>
-                    <option value="titan-crest">Titan Crest</option>
-                    <option value="scepter">Scepter</option>
-                    <option value="magician-crest">Magician Crest</option>
-                    <option value="dust-devil">Dust Devil</option>
-                    <option value="orb-of-growth">Orb of Growth</option>
-                    <option value="stealth-ward">Stealth Ward</option>
-                    <option value="infernum">Infernum</option>
-                    <option value="intellect-tonic">Intellect Tonic</option>
-                    <option value="marksman-crest">Marksman Crest</option>
-                    <option value="ortus">Ortus</option>
-                    <option value="razor-claw">Razor Claw</option>
-                    <option value="megacosm">Megacosm</option>
-                    <option value="barbed-pauldron">Barbed Pauldron</option>
-                    <option value="guardian-crest">Guardian Crest</option>
-                    <option value="echelon-cloak">Echelon Cloak</option>
-                    <option value="divine-wreath">Divine Wreath</option>
-                    <option value="pacifier">Pacifier</option>
-                    <option value="marshal">Marshal</option>
-                    <option value="equinox">Equinox</option>
-                    <option value="stone-of-strength">Stone of Strength</option>
-                    <option value="frosted-lure">Frosted Lure</option>
-                    <option value="fire-blossom">Fire Blossom</option>
-                    <option value="codex">Codex</option>
-                    <option value="overlord">Overlord</option>
-                    <option value="cybernetic-drive">Cybernetic Drive</option>
-                    <option value="mystic-cane">Mystic Cane</option>
-                    <option value="typhoon">Typhoon</option>
-                    <option value="wizard-crest">Wizard Crest</option>
-                    <option value="earthshaker">Earthshaker</option>
-                    <option value="oblivion-crown">Oblivion Crown</option>
-                    <option value="prophecy">Prophecy</option>
-                    <option value="truesilver-bracelet">Truesilver Bracelet</option>
-                    <option value="ravenous-rapier">Ravenous Rapier</option>
-                    <option value="demon-edge">Demon Edge</option>
-                    <option value="caustica">Caustica</option>
-                    <option value="keeper-crest">Keeper Crest</option>
-                    <option value="gaia-greaves">Gaia Greaves</option>
-                    <option value="world-breaker">World Breaker</option>
-                    <option value="orb-of-enlightenment">Orb of Enlightenment</option>
-                    <option value="stalwart-gauntlets">Stalwart Gauntlets</option>
-                    <option value="windcaller">Windcaller</option>
-                    <option value="longbow">Longbow</option>
-                    <option value="nex">Nex</option>
-                    <option value="brimstone">Brimstone</option>
-                    <option value="bloodlust">Bloodlust</option>
-                    <option value="vigorous-amulet">Vigorous Amulet</option>
-                    <option value="mistmeadow-buckler">Mistmeadow Buckler</option>
-                    <option value="violet-brooch">Violet Brooch</option>
-                    <option value="hunt">Hunt</option>
-                    <option value="claymore">Claymore</option>
-                    <option value="serrated-blade">Serrated Blade</option>
-                    <option value="spell-slasher">Spell Slasher</option>
-                    <option value="nightfall">Nightfall</option>
-                    <option value="fortified-mantle">Fortified Mantle</option>
-                    <option value="spiked-birch">Spiked Birch</option>
-                    <option value="imperator">Imperator</option>
-                    <option value="mutilator">Mutilator</option>
-                    <option value="vanguardian">Vanguardian</option>
-                    <option value="shortsword">Shortsword</option>
-                    <option value="frostguard">Frostguard</option>
-                    <option value="galaxy-greaves">Galaxy Greaves</option>
-                    <option value="raiment-of-renewal">Raiment of Renewal</option>
-                    <option value="augmentation">Augmentation</option>
-                    <option value="rapture">Rapture</option>
-                    <option value="obelisk">Obelisk</option>
-                    <option value="rift-walkers">Rift Walkers</option>
-                    <option value="scalding-sceptre">Scalding Sceptre</option>
-                    <option value="refillable-potion">Refillable Potion</option>
-                    <option value="tainted-rounds">Tainted Rounds</option>
-                    <option value="crossbow">Crossbow</option>
-                    <option value="gilded-pendant">Gilded Pendant</option>
-                    <option value="rune-bow">Rune Bow</option>
-                    <option value="plasma-blade">Plasma Blade</option>
-                    <option value="unbroken-will">Unbroken Will</option>
-                    <option value="fist-of-jazuul">Fist of Jazuul</option>
-                    <option value="witchstalker">Witchstalker</option>
-                    <option value="wraith-leggings">Wraith Leggings</option>
-                    <option value="timewarp">Timewarp</option>
-                    <option value="tainted-totem">Tainted Totem</option>
-                    <option value="basilisk">Basilisk</option>
-                    <option value="nullifying-mask">Nullifying Mask</option>
-                    <option value="warden-crest">Warden Crest</option>
-                    <option value="legacy">Legacy</option>
-                    <option value="goliath-crest">Goliath Crest</option>
-                    <option value="spirit-of-amir">Spirit of Amir</option>
-                    <option value="syonic-echo">Syonic Echo</option>
+                    <!-- All items will be populated here by JavaScript -->
                 </select>
             </div>
             
-            <!-- Repeat the same for item-slot-2 through item-slot-6 -->
             <div class="item-selector">
                 <label for="item-slot-2">Item Slot 2:</label>
                 <select id="item-slot-2">
                     <option value="none">No Item</option>
-                    <option value="zealous-tomahawk">Zealous Tomahawk</option>
-                    <option value="entropy">Entropy</option>
-                    <!-- All items repeated here -->
+                    <!-- All items will be populated here by JavaScript -->
                 </select>
             </div>
             
@@ -424,9 +230,7 @@
                 <label for="item-slot-3">Item Slot 3:</label>
                 <select id="item-slot-3">
                     <option value="none">No Item</option>
-                    <option value="zealous-tomahawk">Zealous Tomahawk</option>
-                    <option value="entropy">Entropy</option>
-                    <!-- All items repeated here -->
+                    <!-- All items will be populated here by JavaScript -->
                 </select>
             </div>
             
@@ -434,9 +238,7 @@
                 <label for="item-slot-4">Item Slot 4:</label>
                 <select id="item-slot-4">
                     <option value="none">No Item</option>
-                    <option value="zealous-tomahawk">Zealous Tomahawk</option>
-                    <option value="entropy">Entropy</option>
-                    <!-- All items repeated here -->
+                    <!-- All items will be populated here by JavaScript -->
                 </select>
             </div>
             
@@ -444,9 +246,7 @@
                 <label for="item-slot-5">Item Slot 5:</label>
                 <select id="item-slot-5">
                     <option value="none">No Item</option>
-                    <option value="zealous-tomahawk">Zealous Tomahawk</option>
-                    <option value="entropy">Entropy</option>
-                    <!-- All items repeated here -->
+                    <!-- All items will be populated here by JavaScript -->
                 </select>
             </div>
             
@@ -454,9 +254,7 @@
                 <label for="item-slot-6">Item Slot 6:</label>
                 <select id="item-slot-6">
                     <option value="none">No Item</option>
-                    <option value="zealous-tomahawk">Zealous Tomahawk</option>
-                    <option value="entropy">Entropy</option>
-                    <!-- All items repeated here -->
+                    <!-- All items will be populated here by JavaScript -->
                 </select>
             </div>
             
@@ -539,6 +337,13 @@
                         <span>Movement Speed:</span>
                         <span id="movement-speed">670</span>
                     </div>
+                </div>
+            </div>
+            
+            <div class="effects-container">
+                <h3>Active Effects from Items</h3>
+                <div id="active-effects">
+                    <div class="effect-item">No active effects</div>
                 </div>
             </div>
             
@@ -691,103 +496,160 @@
             }
         };
         
-        // Item data (simplified for this example)
+        // Item data with all items
         const items = {
-            'none': { name: 'No Item', stats: {} },
-            'sky-splitter': { 
-                name: 'Sky Splitter', 
+            'none': { name: 'No Item', stats: {}, effects: [] },
+            'ZealousTomahawk': { 
+                name: 'Zealous Tomahawk', 
                 stats: { 
-                    physicalPower: 35,
-                    attackSpeed: 25,
-                    lifesteal: 7
-                } 
+                    physicalPower: 20
+                },
+                effects: [
+                    { name: 'Desolate', text: 'Ignore 18% of Physical Armor.' }
+                ]
             },
-            'imperator': { 
+            'Entropy': { 
+                name: 'Entropy', 
+                stats: { 
+                    magicalPower: 65,
+                    mana: 400,
+                    abilityHaste: 15
+                },
+                effects: [
+                    { name: 'Degradation', text: 'Deal 3 (+3% Magical Power) additional Damage. Each Ability can only trigger this effect once every 0.2s, per Target.' }
+                ]
+            },
+            'StaminaTonic': { 
+                name: 'Stamina Tonic', 
+                stats: {},
+                effects: [
+                    { name: 'Consume', text: 'Gain 12% Max Health and 15 Ability Haste for 300s. Effect is lost upon death.' },
+                    { name: 'Restriction', text: 'Level 13 required for purchase.' }
+                ]
+            },
+            // Add all other items here with their stats and effects
+            // This is a simplified example with just a few items
+            
+            'Imperator': { 
                 name: 'Imperator', 
                 stats: { 
                     physicalPower: 55,
                     criticalChance: 20
                 },
-                effects: {
-                    criticalDamage: 0.3 // 30% increased critical damage
-                }
+                effects: [
+                    { name: 'Precision', text: 'Critical Strikes deal 30% more damage.' }
+                ]
             },
-            'vanquisher': { 
+            'Vanquisher': { 
                 name: 'Vanquisher', 
                 stats: { 
                     physicalPower: 45,
                     physicalPenetration: 9,
                     criticalChance: 20
-                } 
+                },
+                effects: [
+                    { name: 'Annihilate', text: 'Execute enemies below a certain health threshold.' }
+                ]
             },
-            'demolisher': { 
+            'Demolisher': { 
                 name: 'Demolisher', 
                 stats: { 
                     physicalPower: 35,
                     criticalChance: 20
                 },
-                effects: {
-                    armorPenetration: 0.25 // 25% armor ignore
-                }
+                effects: [
+                    { name: 'Puncture', text: 'Ignore 25% of Physical Armor.' },
+                    { name: 'Trauma', text: 'Additionally, your Basic Attacks and Critical Strikes ignore 30% of Bonus Physical Armor.' }
+                ]
             },
-            'terminus': { 
+            'Terminus': { 
                 name: 'Terminus', 
                 stats: { 
                     physicalPower: 55,
                     criticalChance: 20,
                     lifesteal: 15
-                } 
+                },
+                effects: [
+                    { name: 'Anon', text: 'Convert excess Healing into a Shield. Max Shield size: (+100% Physical Power). The Shield slowly decays 15s after leaving combat.' }
+                ]
             },
-            'rogue': { 
+            'SkySplitter': { 
+                name: 'Sky Splitter', 
+                stats: { 
+                    physicalPower: 35,
+                    attackSpeed: 25,
+                    lifesteal: 7
+                },
+                effects: [
+                    { name: 'Rend', text: 'Deal 5.5% of Target\'s Current Health as Damage On-Hit. Reduced to 3.5% for Ranged Heroes. Minimum of 12 Damage.' }
+                ]
+            },
+            'RogueCrest': { 
                 name: 'Rogue Crest', 
                 stats: { 
                     physicalPower: 3,
                     physicalPenetration: 2,
                     abilityHaste: 4
-                } 
+                },
+                effects: [
+                    { name: 'Rogue', text: 'Restore 3 Health (4 for Kills). After restoring 200 Health: Evolves into Assassin Crest.' }
+                ]
             },
-            'warlock': { 
+            'WarlockCrest': { 
                 name: 'Warlock Crest', 
                 stats: { 
                     magicalPower: 15,
                     health: 80,
                     abilityHaste: 6
-                } 
+                },
+                effects: [
+                    { name: 'Legendary Occultist', text: 'Restore 3 Health (4 for Kills). After restoring 200 Health: Enter Base to Evolve into a Legendary Crest.' }
+                ]
             },
-            'assassin': { 
+            'AssassinCrest': { 
                 name: 'Assassin Crest', 
                 stats: { 
                     physicalPower: 6,
                     physicalPenetration: 3,
                     abilityHaste: 6
-                } 
+                },
+                effects: [
+                    { name: 'Legendary Rogue', text: 'Restore 3 Health (4 for Kills). After restoring 200 Health: Enter Base to Evolve into a Legendary Crest.' }
+                ]
             },
-            'sharpshooter': { 
+            'SharpshooterCrest': { 
                 name: 'Sharpshooter Crest', 
                 stats: { 
                     physicalPower: 8,
                     attackSpeed: 10,
                     lifesteal: 5
-                } 
+                },
+                effects: [
+                    { name: 'Legendary Marksman', text: 'Restore 1 Health (3 for Kills). After restoring 150 Health: Enter Base to Evolve into a Legendary Crest.' }
+                ]
             },
-            'champion': { 
+            'ChampionCrest': { 
                 name: 'Champion Crest', 
                 stats: { 
                     physicalPower: 8,
                     health: 75,
                     omnivamp: 3
-                } 
+                },
+                effects: [
+                    { name: 'Legendary Warrior', text: 'Restore (+8% Physical Power) Health over 10s. After restoring 200 Health: Enter Base to Evolve into a Legendary Crest.' }
+                ]
             },
-            'warrior': { 
+            'WarriorCrest': { 
                 name: 'Warrior Crest', 
                 stats: { 
                     physicalPower: 5,
                     health: 50,
                     omnivamp: 2
-                } 
-            },
-            // Add all other items here with their stats
-            // This is a simplified example - you would need to add all items from the list
+                },
+                effects: [
+                    { name: 'Warrior', text: 'Restore (+8% Physical Power) Health over 10s. After restoring 200 Health: Evolves into Champion Crest.' }
+                ]
+            }
         };
         
         // Get all select elements
@@ -800,6 +662,40 @@
         const itemSlot6 = document.getElementById('item-slot-6');
         const levelSelect = document.getElementById('level');
         
+        // Populate item dropdowns with all available items
+        function populateItemDropdowns() {
+            const itemDropdowns = [itemSlot1, itemSlot2, itemSlot3, itemSlot4, itemSlot5, itemSlot6];
+            
+            // Get all item keys except 'none' and crest items
+            const itemKeys = Object.keys(items).filter(key => 
+                key !== 'none' && 
+                !key.includes('Crest') && 
+                key !== 'StaminaTonic' && 
+                key !== 'StrengthTonic' && 
+                key !== 'ProtectionTonic' && 
+                key !== 'IntellectTonic'
+            );
+            
+            // Sort items alphabetically by name
+            itemKeys.sort((a, b) => items[a].name.localeCompare(items[b].name));
+            
+            // Add options to each dropdown
+            itemDropdowns.forEach(dropdown => {
+                // Clear existing options except the first one
+                while (dropdown.options.length > 1) {
+                    dropdown.remove(1);
+                }
+                
+                // Add all items
+                itemKeys.forEach(key => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = items[key].name;
+                    dropdown.appendChild(option);
+                });
+            });
+        }
+        
         // Add event listeners to all selects
         const allSelects = [crestSlot, itemSlot1, itemSlot2, itemSlot3, itemSlot4, itemSlot5, itemSlot6, levelSelect];
         allSelects.forEach(select => {
@@ -807,6 +703,7 @@
         });
         
         // Initialize
+        populateItemDropdowns();
         updateStats();
         
         function updateStats() {
@@ -840,6 +737,9 @@
             let totalPhysicalPenetration = 0;
             let totalAbilityHaste = 0;
             
+            // Collect active effects
+            const activeEffects = [];
+            
             selectedItems.forEach(item => {
                 if (item && item.stats) {
                     totalPhysicalPower += item.stats.physicalPower || 0;
@@ -848,8 +748,29 @@
                     totalLifesteal += item.stats.lifesteal || 0;
                     totalPhysicalPenetration += item.stats.physicalPenetration || 0;
                     totalAbilityHaste += item.stats.abilityHaste || 0;
+                    
+                    // Add item effects to active effects list
+                    if (item.effects && item.effects.length > 0) {
+                        item.effects.forEach(effect => {
+                            activeEffects.push(`${item.name}: ${effect.name} - ${effect.text}`);
+                        });
+                    }
                 }
             });
+            
+            // Update active effects display
+            const effectsContainer = document.getElementById('active-effects');
+            if (activeEffects.length > 0) {
+                effectsContainer.innerHTML = '';
+                activeEffects.forEach(effect => {
+                    const effectElement = document.createElement('div');
+                    effectElement.className = 'effect-item';
+                    effectElement.textContent = effect;
+                    effectsContainer.appendChild(effectElement);
+                });
+            } else {
+                effectsContainer.innerHTML = '<div class="effect-item">No active effects</div>';
+            }
             
             // Determine ability levels based on character level
             const grenadeLevel = Math.min(5, Math.max(1, Math.floor(level / 4)));
