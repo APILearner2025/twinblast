@@ -777,10 +777,19 @@
 
         // Populate item selectors
         function populateItemSelectors() {
+            console.log('Populating item selectors...'); // Debug log
+            console.log('Items array length:', items.length); // Debug log
+            
             const slotSelectors = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6'];
             
             slotSelectors.forEach(slotId => {
                 const selector = document.getElementById(slotId);
+                if (!selector) {
+                    console.error('Could not find selector:', slotId);
+                    return;
+                }
+                
+                console.log('Populating', slotId); // Debug log
                 
                 // Clear existing options except the first one
                 while (selector.options.length > 1) {
@@ -794,19 +803,29 @@
                     option.textContent = item.name;
                     selector.appendChild(option);
                 });
+                
+                console.log('Added', items.length, 'items to', slotId); // Debug log
             });
             
             // Add event listeners to update item stats when selected
             slotSelectors.forEach(slotId => {
-                document.getElementById(slotId).addEventListener('change', function() {
-                    updateItemStats(this.id, this.value);
-                });
+                const selector = document.getElementById(slotId);
+                if (selector) {
+                    selector.addEventListener('change', function() {
+                        updateItemStats(this.id, this.value);
+                        calculateDamage(); // Auto-calculate when items change
+                    });
+                }
             });
             
             // Add event listener for crest slot
-            document.getElementById('crest-slot').addEventListener('change', function() {
-                updateItemStats(this.id, this.value);
-            });
+            const crestSelector = document.getElementById('crest-slot');
+            if (crestSelector) {
+                crestSelector.addEventListener('change', function() {
+                    updateItemStats(this.id, this.value);
+                    calculateDamage(); // Auto-calculate when crest changes
+                });
+            }
         }
 
         // Update item stats display
@@ -1046,10 +1065,13 @@
         }
 
         // Initialize the page
-        window.onload = function() {
+        document.addEventListener('DOMContentLoaded', function() {
             populateItemSelectors();
             calculateDamage(); // Calculate with default values
             
             // Add event listener to level selector
             document.getElementById('level').addEventListener('change', calculateDamage);
-        };
+        });
+    </script>
+</body>
+</html>
