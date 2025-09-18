@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twinblast Damage Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4cc9f0;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #4cc9f0;
+            text-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            color: #f72585;
+            margin: 20px 0 15px;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            color: #7209b7;
+            margin: 15px 0 10px;
+        }
+        
+        .hero-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .hero-image {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #4361ee, #3a0ca3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            box-shadow: 0 0 15px rgba(67, 97, 238, 0.7);
+        }
+        
+        .item-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .slot {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            border: 2px solid #4361ee;
+        }
+        
+        .slot-title {
+            font-size: 1.2rem;
+            color: #4cc9f0;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            background: #1a1a2e;
+            color: white;
+            border: 1px solid #4361ee;
+            margin-bottom: 10px;
+        }
+        
+        .item-stats {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #f1faee;
+        }
+        
+        .item-stats div {
+            margin-bottom: 5px;
+        }
+        
+        .damage-calculations {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            border: 2px solid #f72585;
+        }
+        
+        .damage-type {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(58, 12, 163, 0.2);
+            border-radius: 5px;
+        }
+        
+        .damage-value {
+            font-size: 1.2rem;
+            color: #4cc9f0;
+            font-weight: bold;
+        }
+        
+        .ability-desc {
+            font-size: 0.9rem;
+            color: #a8dadc;
+            margin-top: 5px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(67, 97, 238, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            color: #f72585;
+            font-weight: bold;
+        }
+        
+        .stat-name {
+            font-size: 0.9rem;
+            color: #a8dadc;
+        }
+        
+        .effects-list {
+            margin-top: 10px;
+            padding-left: 20px;
+            font-size: 0.9rem;
+            color: #f1faee;
+        }
+        
+        .effects-list li {
+            margin-bottom: 5px;
+        }
+        
+        .legendary {
+            color: gold;
+            font-weight: bold;
+        }
+        
+        .update-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #f72585, #b5179e);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .update-button:hover {
+            background: linear-gradient(45deg, #b5179e, #f72585);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(247, 37, 133, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .item-slots {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Twinblast Damage Calculator</h1>
+            <div class="hero-info">
+                <div class="hero-image">TB</div>
+                <div class="hero-description">
+                    <p>Calculate Twinblast's damage output with different items and levels</p>
+                </div>
+            </div>
+        </header>
+        
+        <h2>Item Selection</h2>
+        <div class="item-slots">
+            <div class="slot">
+                <div class="slot-title">Crest Slot</div>
+                <select id="crest-slot">
+                    <option value="">Select Crest</option>
+                    <option value="WarlockCrest">Warlock Crest</option>
+                    <option value="RogueCrest">Rogue Crest</option>
+                    <option value="OccultCrest">Occult Crest</option>
+                    <option value="AssassinCrest">Assassin Crest</option>
+                    <option value="SharpshooterCrest">Sharpshooter Crest</option>
+                    <option value="ChampionCrest">Champion Crest</option>
+                    <option value="WarriorCrest">Warrior Crest</option>
+                    <option value="ConsortCrest">Consort Crest</option>
+                    <option value="MarksmanCrest">Marksman Crest</option>
+                    <option value="GuardianCrest">Guardian Crest</option>
+                    <option value="TitanCrest">Titan Crest</option>
+                    <option value="MagicianCrest">Magician Crest</option>
+                    <option value="WizardCrest">Wizard Crest</option>
+                    <option value="KeeperCrest">Keeper Crest</option>
+                    <option value="WardenCrest">Warden Crest</option>
+                    <option value="GoliathCrest">Goliath Crest</option>
+                </select>
+                <div class="item-stats" id="crest-stats"></div>
+            </div>
+            
+            <div class="slot">
+                <div class="slot-title">Slot Option 1</div>
+                <select id="slot1">
+                    <option value="">Select Item</option>
+                    <!-- Items will be populated by JavaScript -->
+                </select>
+                <div class="item-stats" id="slot1-stats"></div>
+            </div>
+            
+            <div class="slot">
+                <div class="slot-title">Slot Option 2</div>
+                <select id="slot2">
+                    <option value="">Select Item</option>
+                    <!-- Items will be populated by JavaScript -->
+                </select>
+                <div class="item-stats" id="slot2-stats"></div>
+            </div>
+            
+            <div class="slot">
+                <div class="slot-title">Slot Option 3</div>
+                <select id="slot3">
+                    <option value="">Select Item</option>
+                    <!-- Items will be populated by JavaScript -->
+                </select>
+                <div class="item-stats" id="slot3-stats"></div>
+            </div>
+            
+            <div class="slot">
+                <div class="slot-title">Slot Option 4</div>
+                <select id="slot4">
+                    <option value="">Select Item</option>
+                    <!-- Items will be populated by JavaScript -->
+                </select>
+                <div class="item-stats" id="slot4-stats"></div>
+            </div>
+            
+            <div class="slot">
+                <div class="slot-title">Slot Option 5</div>
+                <select id="slot5">
+                    <option value="">Select Item</option>
+                    <!-- Items will be populated by JavaScript -->
+                </select>
+                <div class="item-stats" id="slot5-stats"></div>
+            </div>
+            
+            <div class="slot">
+                <div class="slot-title">Slot Option 6</div>
+                <select id="slot6">
+                    <option value="">Select Item</option>
+                    <!-- Items will be populated by JavaScript -->
+                </select>
+                <div class="item-stats" id="slot6-stats"></div>
+            </div>
+            
+            <div class="slot">
+                <div class="slot-title">Level</div>
+                <select id="level">
+                    <option value="1">Level 1</option>
+                    <option value="2">Level 2</option>
+                    <option value="3">Level 3</option>
+                    <option value="4">Level 4</option>
+                    <option value="5">Level 5</option>
+                    <option value="6">Level 6</option>
+                    <option value="7">Level 7</option>
+                    <option value="8">Level 8</option>
+                    <option value="9">Level 9</option>
+                    <option value="10">Level 10</option>
+                    <option value="11">Level 11</option>
+                    <option value="12">Level 12</option>
+                    <option value="13">Level 13</option>
+                    <option value="14">Level 14</option>
+                    <option value="15">Level 15</option>
+                    <option value="16">Level 16</option>
+                    <option value="17">Level 17</option>
+                    <option value="18" selected>Level 18</option>
+                </select>
+                <div class="item-stats" id="level-stats"></div>
+            </div>
+        </div>
+        
+        <button class="update-button" onclick="calculateDamage()">Calculate Damage</button>
+        
+        <div class="damage-calculations">
+            <h2>Damage Calculations</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="physical-power">0</div>
+                    <div class="stat-name">Physical Power</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="attack-speed">0%</div>
+                    <div class="stat-name">Attack Speed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="critical-chance">0%</div>
+                    <div class="stat-name">Critical Chance</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="physical-pen">0</div>
+                    <div class="stat-name">Physical Penetration</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="lifesteal">0%</div>
+                    <div class="stat-name">Lifesteal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="ability-haste">0</div>
+                    <div class="stat-name">Ability Haste</div>
+                </div>
+            </div>
+            
+            <h3>Active Effects from Items</h3>
+            <ul class="effects-list" id="active-effects">
+                <li>No active effects</li>
+            </ul>
+            
+            <h3>Ability Damage</h3>
+            
+            <div class="damage-type">
+                <h4>Passive: Gunslinger</h4>
+                <div class="damage-value" id="passive-damage">0</div>
+                <div class="ability-desc">After using an ability, next 2 basic attacks gain 40% increased Attack Speed</div>
+            </div>
+            
+            <div class="damage-type">
+                <h4>Basic Attack (2 projectiles)</h4>
+                <div class="damage-value" id="basic-damage">0</div>
+                <div class="ability-desc">Each projectile deals 30 + 47.5% Physical Power (on-hit effects at 50% effectiveness)</div>
+            </div>
+            
+            <div class="damage-type">
+                <h4>Alternate: Vortex Grenade</h4>
+                <div class="damage-value" id="grenade-damage">0</div>
+                <div class="ability-desc">Deals magical damage in an area and slows enemies</div>
+            </div>
+            
+            <div class="damage-type">
+                <h4>Primary: Vaporize</h4>
+                <div class="damage-value" id="vaporize-damage">0</div>
+                <div class="ability-desc">Fires two piercing projectiles that deal physical damage</div>
+            </div>
+            
+            <div class="damage-type">
+                <h4>Secondary: Rocket Dash</h4>
+                <div class="damage-value" id="dash-damage">0</div>
+                <div class="ability-desc">Dash ability with no direct damage</div>
+            </div>
+            
+            <div class="damage-type">
+                <h4>Ultimate: Ventilate</h4>
+                <div class="damage-value" id="ultimate-damage">0</div>
+                <div class="ability-desc">Unleashes a barrage of bullets over 3 seconds</div>
+            </div>
+            
+            <div class="damage-type">
+                <h4>On-Hit Effects</h4>
+                <div class="damage-value" id="onhit-damage">0</div>
+                <div class="ability-desc">Total additional damage from on-hit effects</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Twinblast base stats per level (accurate values)
+        const twinblastStats = {
+            1: { 
+                physicalPower: 60, 
+                attackSpeed: 125, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 710,
+                maxMana: 310,
+                healthRegen: 0.9,
+                manaRegen: 1.4,
+                movementSpeed: 670
+            },
+            2: { 
+                physicalPower: 63.2, 
+                attackSpeed: 127, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 830,
+                maxMana: 355,
+                healthRegen: 1.05,
+                manaRegen: 1.52,
+                movementSpeed: 670
+            },
+            3: { 
+                physicalPower: 66.4, 
+                attackSpeed: 129, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 950,
+                maxMana: 400,
+                healthRegen: 1.2,
+                manaRegen: 1.64,
+                movementSpeed: 670
+            },
+            4: { 
+                physicalPower: 69.6, 
+                attackSpeed: 131, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1070,
+                maxMana: 445,
+                healthRegen: 1.35,
+                manaRegen: 1.76,
+                movementSpeed: 670
+            },
+            5: { 
+                physicalPower: 72.8, 
+                attackSpeed: 133, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1190,
+                maxMana: 490,
+                healthRegen: 1.5,
+                manaRegen: 1.88,
+                movementSpeed: 670
+            },
+            6: { 
+                physicalPower: 76.0, 
+                attackSpeed: 135, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1310,
+                maxMana: 535,
+                healthRegen: 1.65,
+                manaRegen: 2.0,
+                movementSpeed: 670
+            },
+            7: { 
+                physicalPower: 79.2, 
+                attackSpeed: 137, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1430,
+                maxMana: 580,
+                healthRegen: 1.8,
+                manaRegen: 2.12,
+                movementSpeed: 670
+            },
+            8: { 
+                physicalPower: 82.4, 
+                attackSpeed: 139, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1550,
+                maxMana: 625,
+                healthRegen: 1.95,
+                manaRegen: 2.24,
+                movementSpeed: 670
+            },
+            9: { 
+                physicalPower: 85.6, 
+                attackSpeed: 141, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1670,
+                maxMana: 670,
+                healthRegen: 2.1,
+                manaRegen: 2.36,
+                movementSpeed: 670
+            },
+            10: { 
+                physicalPower: 88.8, 
+                attackSpeed: 143, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1790,
+                maxMana: 715,
+                healthRegen: 2.25,
+                manaRegen: 2.48,
+                movementSpeed: 670
+            },
+            11: { 
+                physicalPower: 92.0, 
+                attackSpeed: 145, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 1910,
+                maxMana: 760,
+                healthRegen: 2.4,
+                manaRegen: 2.6,
+                movementSpeed: 670
+            },
+            12: { 
+                physicalPower: 95.2, 
+                attackSpeed: 147, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2030,
+                maxMana: 805,
+                healthRegen: 2.55,
+                manaRegen: 2.72,
+                movementSpeed: 670
+            },
+            13: { 
+                physicalPower: 98.4, 
+                attackSpeed: 149, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2150,
+                maxMana: 850,
+                healthRegen: 2.7,
+                manaRegen: 2.84,
+                movementSpeed: 670
+            },
+            14: { 
+                physicalPower: 101.6, 
+                attackSpeed: 151, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2270,
+                maxMana: 895,
+                healthRegen: 2.85,
+                manaRegen: 2.96,
+                movementSpeed: 670
+            },
+            15: { 
+                physicalPower: 104.8, 
+                attackSpeed: 153, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2390,
+                maxMana: 940,
+                healthRegen: 3.0,
+                manaRegen: 3.08,
+                movementSpeed: 670
+            },
+            16: { 
+                physicalPower: 108.0, 
+                attackSpeed: 155, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2510,
+                maxMana: 985,
+                healthRegen: 3.15,
+                manaRegen: 3.2,
+                movementSpeed: 670
+            },
+            17: { 
+                physicalPower: 111.2, 
+                attackSpeed: 157, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2630,
+                maxMana: 1030,
+                healthRegen: 3.3,
+                manaRegen: 3.32,
+                movementSpeed: 670
+            },
+            18: { 
+                physicalPower: 114.4, 
+                attackSpeed: 159, 
+                criticalChance: 0, 
+                physicalPenetration: 0, 
+                lifesteal: 0, 
+                abilityHaste: 0,
+                maxHealth: 2750,
+                maxMana: 1075,
+                healthRegen: 3.45,
+                manaRegen: 3.44,
+                movementSpeed: 670
+            }
+        };
+
+        // Ability scaling factors (accurate values)
+        const abilityScaling = {
+            basic: 0.475,    // 47.5% of physical power per projectile (2 projectiles per attack)
+            grenade: 0.55,   // 55% of physical power
+            vaporize: 0.40,  // 40% of physical power per projectile (2 projectiles)
+            ultimate: 0.09   // 9% of physical power per bullet
+        };
+
+        // Base ability damages (max level values)
+        const baseDamage = {
+            basic: 30,          // per projectile
+            grenade: 125,       // Vortex Grenade at max level
+            vaporize: 135,      // per projectile at max level
+            ultimate: 24        // per bullet at max level
+        };
+
+        // Items data (abbreviated for demonstration)
+        const items = [
+            { name: "AbyssalBracers", stats: { physicalPower: 25, health: 200 }, effects: ["Grants bonus health based on missing mana"] },
+            { name: "Absolution", stats: { physicalPower: 40, attackSpeed: 25, magicalArmor: 35, tenacity: 20 }, effects: ["Damage mitigation and movement speed boost"] },
+            { name: "AegisOfAgawar", stats: { physicalPower: 20, health: 400, criticalChance: 15 }, effects: ["Gain bonus armor based on health"] },
+            { name: "AlchemicalRod", stats: { magicalPower: 20, mana: 150 }, effects: ["Gain max mana on camp leader kills"] },
+            { name: "Ashbringer", stats: { physicalPower: 40, attackSpeed: 25, criticalChance: 20, abilityHaste: 10 }, effects: ["Reduces non-ultimate cooldowns on hit"] },
+            { name: "AssassinCrest", stats: { physicalPower: 6, physicalPenetration: 3, abilityHaste: 6 }, effects: ["Evolves into a legendary crest"] },
+            { name: "AstralCatalyst", stats: { magicalPower: 80, mana: 250, abilityHaste: 20 }, effects: ["Reduces ultimate cooldown"] },
+            { name: "Augmentation", stats: { physicalPower: 35, attackSpeed: 20, health: 225, abilityHaste: 16 }, effects: ["Empowers next basic attack"] },
+            { name: "AzureCore", stats: { magicalPower: 65, mana: 350, abilityHaste: 15 }, effects: ["Grants shield based on mana"] },
+            { name: "BandedEmerald", stats: { health: 250 }, effects: ["Basic health item"] },
+            { name: "BarbaricCleaver", stats: { physicalPower: 25 }, effects: ["Deals splash damage on basic attacks"] },
+            { name: "BarbedPauldron", stats: { physicalArmor: 25 }, effects: ["Reduces attacker's attack speed"] },
+            { name: "Basilisk", stats: { physicalPower: 40, health: 300, abilityHaste: 20 }, effects: ["Reduces target's physical armor"] },
+            { name: "BerserkersAxe", stats: { physicalPower: 40, health: 300, abilityHaste: 15, movementSpeed: 3 }, effects: ["Empowers next basic attack and grants movement speed"] },
+            { name: "BloodTome", stats: { magicalPower: 25, magicalLifesteal: 5 }, effects: ["Basic magical lifesteal item"] },
+            { name: "Bloodlust", stats: { physicalPower: 20, omnivamp: 4 }, effects: ["Basic omnivamp item"] },
+            { name: "Boneseeker", stats: { physicalPower: 30, physicalPenetration: 8 }, effects: ["Increases damage against low health targets"] },
+            { name: "Bonesaw", stats: { attackSpeed: 35, physicalPenetration: 10 }, effects: ["Shreds armor on hit"] },
+            { name: "Breach", stats: { physicalPower: 45, abilityHaste: 15 }, effects: ["Ignores portion of target's armor"] },
+            { name: "Brimstone", stats: { health: 250 }, effects: ["Deals damage over time to nearby enemies"] },
+            { name: "Brutallax", stats: { physicalPower: 12, health: 100, omnivamp: 4 }, effects: ["Cleanse debuffs and gain tenacity"] },
+            { name: "CatalyticDrive", stats: { health: 250, magicalArmor: 40, baseHealthRegeneration: 80, abilityHaste: 10 }, effects: ["Evolves into Cybernetic Drive"] },
+            { name: "Caustica", stats: { magicalPower: 70, baseManaRegeneration: 75 }, effects: ["Ignores portion of magical armor"] },
+            { name: "CeruleanStone", stats: { physicalArmor: 20, baseManaRegeneration: 75 }, effects: ["Basic armor and mana regen item"] },
+            { name: "ChampionCrest", stats: { physicalPower: 8, health: 75, omnivamp: 3 }, effects: ["Evolves into a legendary crest"] },
+            { name: "ChaoticCore", stats: { magicalPower: 25, health: 150 }, effects: ["Grants random stat bonuses"] },
+            { name: "ChronomaticWand", stats: { magicalPower: 30, abilityHaste: 8 }, effects: ["Reduces ability cooldowns"] },
+            { name: "Citadel", stats: { physicalPower: 40, health: 250, physicalArmor: 35 }, effects: ["Reduces nearby enemies' armor"] },
+            { name: "Claymore", stats: { physicalPower: 20, criticalChance: 12 }, effects: ["Basic critical chance item"] },
+            { name: "Codex", stats: { magicalPower: 12 }, effects: ["Basic magical power item"] },
+            { name: "Combustion", stats: { magicalPower: 75, magicalPenetration: 8, mana: 400 }, effects: ["Deals area damage on ability hit"] },
+            { name: "CompositeBow", stats: { attackSpeed: 15 }, effects: ["Deals bonus damage on hit"] },
+            { name: "ConsortCrest", stats: { health: 40, baseManaRegeneration: 25, goldPerSecond: 0.25 }, effects: ["Generates gold over time"] },
+            { name: "Crescelia", stats: { magicalPower: 50, baseManaRegeneration: 125, abilityHaste: 20 }, effects: ["Empowers next basic attack and reduces cooldowns"] },
+            { name: "CrimsonEdge", stats: { physicalPower: 15, lifesteal: 5 }, effects: ["Basic lifesteal item"] },
+            { name: "Crossbow", stats: { criticalChance: 10 }, effects: ["Basic critical chance item"] },
+            { name: "CrystalTear", stats: { magicalPower: 40, abilityHaste: 10, baseManaRegeneration: 150, healAndShieldPower: 10 }, effects: ["Grants bonus power to nearby allies"] },
+            { name: "CrystallineCuirass", stats: { health: 325, magicalArmor: 50 }, effects: ["Grants stacking magical armor"] },
+            { name: "CyberneticDrive", stats: { health: 300, magicalArmor: 45, baseHealthRegeneration: 100, abilityHaste: 10 }, effects: ["Executes low health minions and grants armor"] },
+            { name: "Dawnstar", stats: { health: 300, baseHealthRegeneration: 100, physicalArmor: 25, abilityHaste: 10 }, effects: ["Reduces damage dealt by attackers"] },
+            { name: "Deathstalker", stats: { physicalPower: 40, physicalPenetration: 5, attackSpeed: 25 }, effects: ["Shreds armor on hit and grants attack speed"] },
+            { name: "Demolifier", stats: { physicalPower: 35, criticalChance: 20 }, effects: ["Ignores portion of armor"] },
+            { name: "DemonEdge", stats: { physicalPower: 40, physicalPenetration: 8, health: 200, abilityHaste: 10 }, effects: ["Grants movement speed and bonus damage"] },
+            { name: "DiffusalCane", stats: { magicalPower: 35, magicalPenetration: 5 }, effects: ["Reduces target's magical armor"] },
+            { name: "DivinePotion", stats: { health: 100, mana: 50 }, effects: ["Upgrades refillable potion"] },
+            { name: "DivineWreath", stats: { magicalPower: 20, healAndShieldPower: 5 }, effects: ["Increases healing and shielding"] },
+            { name: "Draconum", stats: { physicalPower: 45, physicalArmor: 40, abilityHaste: 15 }, effects: ["Grants increased healing based on stacks"] },
+            { name: "Dread", stats: { physicalPower: 45, physicalPenetration: 8, magicalArmor: 35 }, effects: ["Blocks magical damage and returns damage"] },
+            { name: "Dreambinder", stats: { magicalPower: 85, health: 325 }, effects: ["Slows targets on ability hit"] },
+            { name: "DuskStave", stats: { magicalPower: 30, mana: 200 }, effects: ["Basic magical power and mana item"] },
+            { name: "DustDevil", stats: { physicalPower: 30, attackSpeed: 25, criticalChance: 20, movementSpeed: 4 }, effects: ["Grants stacking attack speed and movement speed"] },
+            { name: "Dynamo", stats: { health: 300, physicalArmor: 25, abilityHaste: 10 }, effects: ["Increases damage taken by target"] },
+            { name: "EchelonCloak", stats: { physicalPower: 35, attackSpeed: 20, health: 250, abilityHaste: 10 }, effects: ["Grants camouflage and bonus damage"] },
+            { name: "Elafrost", stats: { health: 350, physicalArmor: 35, baseManaRegeneration: 100, abilityHaste: 15 }, effects: ["Empowers next basic attack and slows target"] },
+            { name: "EnergyStream", stats: { baseManaRegeneration: 50 }, effects: ["Basic mana regeneration item"] },
+            { name: "Entropy", stats: { magicalPower: 65, mana: 400, abilityHaste: 15 }, effects: ["Deals bonus damage on ability hit"] },
+            { name: "Envy", stats: { physicalPower: 40, physicalPenetration: 6, mana: 250 }, effects: ["Next basic attack critically strikes and silences target"] },
+            { name: "Epoch", stats: { magicalPower: 30, mana: 200, abilityHaste: 8 }, effects: ["Puts user in stasis"] },
+            { name: "Equinox", stats: { physicalPower: 20, attackSpeed: 30, criticalChance: 20 }, effects: ["Deals bonus damage on hit and grants shield"] },
+            { name: "EssenceRing", stats: { baseManaRegeneration: 100, abilityHaste: 8 }, effects: ["Basic mana regeneration and ability haste item"] },
+            { name: "Everbloom", stats: { magicalPower: 45, health: 200, healAndShieldPower: 8 }, effects: ["Grants damage mitigation and tenacity to allies"] },
+            { name: "Eviscerator", stats: { physicalPower: 12, attackSpeed: 20, lifesteal: 7 }, effects: ["Grants attack speed and omnivamp"] },
+            { name: "Fenix", stats: { physicalPower: 55, lifesteal: 12 }, effects: ["Revives upon death with portion of health"] },
+            { name: "FireBlossom", stats: { health: 375, physicalArmor: 40 }, effects: ["Deals damage to nearby enemies"] },
+            { name: "FistOfJazuul", stats: { health: 550, abilityHaste: 20 }, effects: ["Empowers next basic attack based on health"] },
+            { name: "FluxMatrix", stats: { health: 300, magicalArmor: 40, abilityHaste: 12 }, effects: ["Increases magical damage taken and reduces tenacity"] },
+            { name: "FortifiedMantle", stats: { physicalPower: 20, physicalArmor: 15 }, effects: ["Basic physical armor item"] },
+            { name: "FrostedLure", stats: { health: 350, physicalArmor: 30, abilityHaste: 10 }, effects: ["Deals damage and slows nearby heroes"] },
+            { name: "Frostguard", stats: { health: 200, physicalArmor: 40, magicalArmor: 40 }, effects: ["Reduces attacker's attack speed"] },
+            { name: "GaiaGreaves", stats: { health: 300, physicalArmor: 40, abilityHaste: 15, tenacity: 20 }, effects: ["Grants movement speed and empowers basic attacks"] },
+            { name: "GalaxyGreaves", stats: { physicalArmor: 30, magicalArmor: 20, baseManaRegeneration: 100, abilityHaste: 10 }, effects: ["Grants increased jump height and movement speed"] },
+            { name: "GiantsRing", stats: { health: 300, physicalArmor: 45, abilityHaste: 15 }, effects: ["Increases hero size and mitigates damage"] },
+            { name: "GildedPendant", stats: { physicalArmor: 20, abilityHaste: 8 }, effects: ["Basic armor and ability haste item"] },
+            { name: "GolemsGift", stats: { magicalPower: 70, physicalArmor: 35, baseManaRegeneration: 100, abilityHaste: 15 }, effects: ["Grants stacks of stone skin"] },
+            { name: "GoliathCrest", stats: { health: 90, physicalArmor: 6, magicalArmor: 3 }, effects: ["Evolves into a legendary crest"] },
+            { name: "Greatsword", stats: { physicalPower: 30 }, effects: ["Basic physical power item"] },
+            { name: "GuardianCrest", stats: { health: 40, baseHealthRegeneration: 20, goldPerSecond: 0.25 }, effects: ["Generates gold over time"] },
+            { name: "HallowedBraid", stats: { physicalPower: 35, lifesteal: 10 }, effects: ["Heals based on damage dealt"] },
+            { name: "HeroicGuard", stats: { magicalArmor: 20, tenacity: 15 }, effects: ["Basic magical armor and tenacity item"] },
+            { name: "HexboundBracers", stats: { physicalArmor: 45, baseHealthRegeneration: 125, abilityHaste: 20 }, effects: ["Restores mana based on damage taken"] },
+            { name: "HonedKris", stats: { physicalPower: 20, physicalPenetration: 3 }, effects: ["Basic physical penetration item"] },
+            { name: "HornedPlate", stats: { physicalArmor: 25 }, effects: ["Reduces healing of attacker"] },
+            { name: "Hunt", stats: { physicalPower: 15, attackSpeed: 10 }, effects: ["Deals bonus damage to monsters"] },
+            { name: "IceskornTalons", stats: { physicalPower: 12, health: 100, omnivamp: 4 }, effects: ["Creates ice sheet that slows enemies"] },
+            { name: "Imperator", stats: { physicalPower: 55, criticalChance: 20 }, effects: ["Increases critical strike damage"] },
+            { name: "Infernum", stats: { physicalPower: 45, physicalPenetration: 5, mana: 200, abilityHaste: 10 }, effects: ["Applies stacks that ignite enemy"] },
+            { name: "IntellectTonic", stats: { magicalPower: 60, mana: 200 }, effects: ["Temporarily increases magical power and mana regen"] },
+            { name: "IronwoodWarbow", stats: { physicalPower: 20, attackSpeed: 15 }, effects: ["Basic attack speed item"] },
+            { name: "Judgement", stats: { physicalPower: 12, health: 100, omnivamp: 4 }, effects: ["Deals area damage and heals based on damage"] },
+            { name: "KeeperCrest", stats: { health: 80, baseManaRegeneration: 35, goldPerSecond: 0.35 }, effects: ["Evolves into a legendary crest"] },
+            { name: "Kingsbane", stats: { physicalPower: 45, criticalChance: 25 }, effects: ["Deals bonus damage based on target's missing health"] },
+            { name: "Leafsong", stats: { health: 120, baseHealthRegeneration: 50, goldPerSecond: 1.5 }, effects: ["Increases movement speed of nearby allies"] },
+            { name: "Legacy", stats: { physicalPower: 35, health: 225, magicalArmor: 40, tenacity: 20 }, effects: ["Cleanse and grant CC immunity"] },
+            { name: "Leviathan", stats: { health: 300, magicalArmor: 40, baseHealthRegeneration: 80, abilityHaste: 8 }, effects: ["Reduces healing of attacker"] },
+            { name: "Liberator", stats: { physicalPower: 12, attackSpeed: 15, lifesteal: 7 }, effects: ["Cleanse debuffs and gain shield"] },
+            { name: "LifeRing", stats: { baseHealthRegeneration: 60, physicalArmor: 15 }, effects: ["Basic health regeneration item"] },
+            { name: "LifeStream", stats: { baseHealthRegeneration: 40 }, effects: ["Basic health regeneration item"] },
+            { name: "Lifebinder", stats: { magicalPower: 85, magicalLifesteal: 12, abilityHaste: 15 }, effects: ["Grants stacking magical power and magical lifesteal"] },
+            { name: "LightningHawk", stats: { physicalPower: 45, attackSpeed: 25, criticalChance: 20 }, effects: ["Empowers next basic attack and slows target"] },
+            { name: "LochShawl", stats: { magicalArmor: 25, baseHealthRegeneration: 60 }, effects: ["Reduces healing of attacker"] },
+            { name: "Longbow", stats: { attackSpeed: 10 }, effects: ["Basic attack speed item"] },
+            { name: "LuckyFeather", stats: { omnivamp: 3 }, effects: ["Increases damage to monsters and grants bonus gold"] },
+            { name: "Lunaria", stats: { magicalPower: 55, abilityHaste: 12, healAndShieldPower: 12 }, effects: ["Heals lowest health ally based on damage dealt"] },
+            { name: "MagicianCrest", stats: { magicalPower: 8, mana: 80, abilityHaste: 4 }, effects: ["Evolves into Wizard Crest"] },
+            { name: "Magnify", stats: { magicalPower: 60, health: 325, abilityHaste: 15, omnivamp: 10 }, effects: ["Empowers next basic attack and shreds magical armor"] },
+            { name: "Malediction", stats: { health: 100, baseManaRegeneration: 40, goldPerSecond: 1.5 }, effects: ["Cleanse yourself and nearby allies"] },
+            { name: "Malady", stats: { physicalPower: 45, physicalPenetration: 10, abilityHaste: 8 }, effects: ["Causes target to explode based on max health"] },
+            { name: "MarksmanCrest", stats: { physicalPower: 4, attackSpeed: 5, lifesteal: 3 }, effects: ["Evolves into Sharpshooter Crest"] },
+            { name: "Marshal", stats: { magicalPower: 50, baseManaRegeneration: 100, abilityHaste: 15 }, effects: ["Grants attack speed and bonus damage on hit"] },
+            { name: "Megacosm", stats: { magicalPower: 60, mana: 300, abilityHaste: 10 }, effects: ["Deals damage based on target's max health"] },
+            { name: "Mesmer", stats: { physicalPower: 50, health: 275, physicalPenetration: 8 }, effects: ["Grants spell shield that blocks next ability"] },
+            { name: "Mindrazor", stats: { physicalPower: 40, mana: 300, abilityHaste: 15 }, effects: ["Deals splash damage and grants physical power based on mana"] },
+            { name: "MistmeadowBuckler", stats: { physicalPower: 45, magicalArmor: 35, baseHealthRegeneration: 80, abilityHaste: 15 }, effects: ["Blocks damage based on charges"] },
+            { name: "Mutilator", stats: { physicalPower: 40, abilityHaste: 15, omnivamp: 12 }, effects: ["Deals damage based on target's max health"] },
+            { name: "MysticCane", stats: { magicalPower: 20, baseManaRegeneration: 75 }, effects: ["Basic magical power and mana regeneration item"] },
+            { name: "NetherShard", stats: { magicalPower: 30, abilityHaste: 8 }, effects: ["Increases damage to monsters"] },
+            { name: "Nightfall", stats: { physicalPower: 45, physicalPenetration: 8, omnivamp: 7 }, effects: ["Abilities heal based on damage dealt to heroes"] },
+            { name: "Noxia", stats: { magicalPower: 85, abilityHaste: 20 }, effects: ["Deals bonus damage based on target's max health"] },
+            { name: "NuclearRounds", stats: { attackSpeed: 40, criticalChance: 20, abilityHaste: 15 }, effects: ["Increases ability damage"] },
+            { name: "NullifyingMask", stats: { magicalArmor: 20 }, effects: ["Basic magical armor item"] },
+            { name: "NyrWarboots", stats: { health: 180, physicalArmor: 8, magicalArmor: 5 }, effects: ["Grants movement speed and health regeneration"] },
+            { name: "Oathkeeper", stats: { magicalPower: 80, health: 200, abilityHaste: 15 }, effects: ["Empowers next basic attack"] },
+            { name: "Obelisk", stats: { magicalPower: 30, health: 100, abilityHaste: 8 }, effects: ["Empowers basic attack and collects souls on kill"] },
+            { name: "OblivionCrown", stats: { magicalPower: 110 }, effects: ["Increases magical power by percentage"] },
+            { name: "OccultCrest", stats: { magicalPower: 8, health: 50, abilityHaste: 4 }, effects: ["Evolves into Warlock Crest"] },
+            { name: "Omen", stats: { physicalPower: 45, physicalPenetration: 8, abilityHaste: 10 }, effects: ["Empowers next basic attack and reduces cooldowns"] },
+            { name: "OnixianQuiver", stats: { attackSpeed: 40, criticalChance: 20, lifesteal: 7 }, effects: ["Fires additional projectiles and increases critical chance"] },
+            { name: "OrbOfEnlightenment", stats: { magicalPower: 65, health: 250, mana: 250 }, effects: ["Grants bonus magical power and health"] },
+            { name: "OrbOfGrowth", stats: { magicalPower: 65, health: 250, mana: 250 }, effects: ["Evolves into Orb of Enlightenment"] },
+            { name: "Ortus", stats: { physicalPower: 12, physicalPenetration: 5, abilityHaste: 8 }, effects: ["Grants movement speed and physical power on takedowns"] },
+            { name: "Overseer", stats: { magicalPower: 80, magicalPenetration: 7, magicalLifesteal: 7 }, effects: ["Increases damage and healing from abilities"] },
+            { name: "Overlord", stats: { physicalPower: 40, health: 275 }, effects: ["Deals splash damage and permanently gains health on kills"] },
+            { name: "Pacifier", stats: { physicalPower: 12, attackSpeed: 15, lifesteal: 7 }, effects: ["Dash and empower next physical damage instance"] },
+            { name: "Painweaver", stats: { physicalPower: 50, physicalPenetration: 8, movementSpeed: 3 }, effects: ["Grants stacking physical penetration and movement speed"] },
+            { name: "Pendant", stats: { abilityHaste: 5 }, effects: ["Basic ability haste item"] },
+            { name: "Penumbra", stats: { physicalPower: 40, health: 200, physicalPenetration: 6, abilityHaste: 20 }, effects: ["Reduces non-ultimate cooldowns"] },
+            { name: "PlasmaBlade", stats: { physicalPower: 30, magicalPower: 50, attackSpeed: 25, criticalChance: 20 }, effects: ["Grants stacking critical strike chance"] },
+            { name: "PolarTreads", stats: { abilityHaste: 10 }, effects: ["Grants movement speed"] },
+            { name: "PotentStaff", stats: { magicalPower: 40 }, effects: ["Basic magical power item"] },
+            { name: "Prophecy", stats: { magicalPower: 70, attackSpeed: 30, abilityHaste: 15 }, effects: ["Deals bonus damage on hit"] },
+            { name: "ProtectionTonic", stats: { physicalArmor: 25, magicalArmor: 25 }, effects: ["Temporarily increases armor and tenacity"] },
+            { name: "QuantumCore", stats: { health: 500, mana: 300, abilityHaste: 12 }, effects: ["Replaces blink with tele-blink"] },
+            { name: "RaimentOfRenewal", stats: { health: 600, baseHealthRegeneration: 50, abilityHaste: 15 }, effects: ["Regenerates health based on missing health"] },
+            { name: "Rapture", stats: { attackSpeed: 30, health: 300, omnivamp: 8 }, effects: ["Basic attacks deal bonus damage based on health"] },
+            { name: "RavenousRapier", stats: { physicalPower: 20 }, effects: ["Empowers next basic attack"] },
+            { name: "RazorClaw", stats: { attackSpeed: 15, lifesteal: 5 }, effects: ["Basic attack speed and lifesteal item"] },
+            { name: "Razorback", stats: { health: 180, physicalArmor: 8, magicalArmor: 5 }, effects: ["Grants bonus armor and reflects damage"] },
+            { name: "Reckoning", stats: { physicalPower: 35, attackSpeed: 20, physicalPenetration: 7, mana: 300 }, effects: ["Deals bonus damage on hit based on mana"] },
+            { name: "Reclamation", stats: { physicalPower: 30, health: 200 }, effects: ["Deals bonus damage to structures"] },
+            { name: "RedwoodShortbow", stats: { attackSpeed: 20, abilityHaste: 8 }, effects: ["Basic attack speed and ability haste item"] },
+            { name: "RefillablePotion", stats: {}, effects: ["Restores health over time"] },
+            { name: "RejuvinationRobe", stats: { magicalArmor: 30, baseHealthRegeneration: 80 }, effects: ["Basic magical armor and health regeneration item"] },
+            { name: "Requiem", stats: { physicalPower: 55, physicalPenetration: 12 }, effects: ["Deals execute damage to low health targets"] },
+            { name: "Resolution", stats: { physicalPower: 40, attackSpeed: 25 }, effects: ["Increases damage against immobilized targets"] },
+            { name: "RiftWalkers", stats: { health: 120, baseHealthRegeneration: 50, goldPerSecond: 1.5 }, effects: ["Dash and pull nearby heroes"] },
+            { name: "RobustArbalest", stats: { attackSpeed: 20, criticalChance: 12 }, effects: ["Basic attack speed and critical chance item"] },
+            { name: "RogueCrest", stats: { physicalPower: 3, physicalPenetration: 2, abilityHaste: 4 }, effects: ["Evolves into Assassin Crest"] },
+            { name: "RuneBow", stats: { magicalPower: 35, attackSpeed: 15 }, effects: ["Basic magical power and attack speed item"] },
+            { name: "RuthlessBroadsword", stats: { physicalPower: 25 }, effects: ["Reduces target's physical armor"] },
+            { name: "Sabre", stats: { physicalPower: 15 }, effects: ["Basic physical power item"] },
+            { name: "Sai", stats: { attackSpeed: 20, physicalPenetration: 4 }, effects: ["Basic attack speed and physical penetration item"] },
+            { name: "Salvation", stats: { physicalPower: 40, health: 375, tenacity: 20 }, effects: ["Grants shield and omnivamp"] },
+            { name: "Sanctification", stats: { health: 120, baseHealthRegeneration: 50, goldPerSecond: 1.5 }, effects: ["Grants shield and tenacity to nearby heroes"] },
+            { name: "SaphirsMantle", stats: { health: 180, physicalArmor: 8, magicalArmor: 5 }, effects: ["Increases size and max health temporarily"] },
+            { name: "ScaldingSceptere", stats: { magicalPower: 30 }, effects: ["Ignores portion of magical armor"] },
+            { name: "Scepter", stats: { magicalPower: 30 }, effects: ["Basic magical power item"] },
+            { name: "SentinelCrest", stats: { health: 40, baseManaRegeneration: 25, goldPerSecond: 0.25 }, effects: ["Generates gold over time"] },
+            { name: "Sentry", stats: {}, effects: ["Reveals nearby wards"] },
+            { name: "SerratedBlade", stats: { physicalPower: 20 }, effects: ["Reduces target's healing"] },
+            { name: "SharpshooterCrest", stats: { physicalPower: 8, attackSpeed: 10, lifesteal: 5 }, effects: ["Evolves into a legendary crest"] },
+            { name: "Shortsword", stats: { physicalPower: 8 }, effects: ["Basic physical power item"] },
+            { name: "Silentium", stats: { health: 100, baseManaRegeneration: 40, goldPerSecond: 1.5 }, effects: ["Silences target and deals damage"] },
+            { name: "SkySplitter", stats: { physicalPower: 35, attackSpeed: 25, lifesteal: 7 }, effects: ["Deals damage based on target's current health"] },
+            { name: "Solaris", stats: { physicalPower: 40, criticalChance: 20, mana: 300, abilityHaste: 15 }, effects: ["Empowers next basic attack and heals based on damage"] },
+            { name: "Solstone", stats: {}, effects: ["Places invisible ward"] },
+            { name: "Soulbearer", stats: { magicalPower: 30, mana: 200, abilityHaste: 8 }, effects: ["Grants shield and magical lifesteal"] },
+            { name: "Soulbinder", stats: { magicalPower: 80, mana: 400, abilityHaste: 20 }, effects: ["Deals bonus damage at long range"] },
+            { name: "SoulChalice", stats: { physicalPower: 12, mana: 150 }, effects: ["Grants physical power based on mana"] },
+            { name: "SpearOfDesolation", stats: { physicalPower: 45, physicalPenetration: 9, abilityHaste: 10 }, effects: ["Increases damage and ultimate haste"] },
+            { name: "Spectra", stats: { attackSpeed: 40, abilityHaste: 12 }, effects: ["Deals bonus damage on hit and reduces cooldowns"] },
+            { name: "SpellSlasher", stats: { abilityHaste: 8 }, effects: ["Empowers next basic attack"] },
+            { name: "Spellbreaker", stats: { magicalPower: 75, magicalArmor: 35, abilityHaste: 10 }, effects: ["Grants spell shield and increases magical power"] },
+            { name: "SpikedBirch", stats: { magicalPower: 35 }, effects: ["Reduces target's healing"] },
+            { name: "SpiritBeads", stats: { mana: 150 }, effects: ["Basic mana item"] },
+            { name: "SpiritOfAmir", stats: { magicalPower: 70, health: 175, magicalPenetration: 7, abilityHaste: 10 }, effects: ["Grants different bonuses in and out of jungle"] },
+            { name: "SpiritShiv", stats: { physicalPower: 15, mana: 200 }, effects: ["Basic physical power and mana item"] },
+            { name: "StalwartGauntlets", stats: { health: 极速战靴", health: 200, baseHealthRegeneration: 50 }, effects: ["Basic health and health regeneration item"] },
+            { name: "StaminaTonic", stats: { health: 120, abilityHaste: 15 }, effects: ["Temporarily increases health and ability haste"] },
+            { name: "StealthWard", stats: {}, effects: ["Places invisible ward"] },
+            { name: "SteelMail", stats: { physicalArmor: 30 }, effects: ["Basic physical armor item"] },
+            { name: "StoneOfStrength", stats: { physicalPower: 20, health: 150 }, effects: ["Basic physical power and health item"] },
+            { name: "Stonewall", stats: { health: 275, physicalArmor: 65 }, effects: ["Mitigates physical damage"] },
+            { name: "StormBreaker", stats: { physicalPower: 极速战靴", attackSpeed: 35 }, effects: ["Releases chain lightning on empowered basic attack"] },
+            { name: "StrengthTonic", stats: { physicalPower: 30, omnivamp: 10 }, effects: ["Temporarily increases physical power and omnivamp"] },
+            { name: "SyonicEcho", stats: { physicalPower: 45, physicalPenetration: 7, abilityHaste: 极速战靴", lifesteal: 12 }, effects: ["Grants attack speed and resets basic attack cooldown"] },
+            { name: "TaintedBlade", stats: { physicalPower: 40, health: 275, abilityHaste: 15 }, effects: ["Reduces target's healing and increases damage taken"] },
+            { name: "TaintedCharm", stats: { health: 375, baseManaRegeneration: 125, abilityHaste: 10, tenacity: 20 }, effects: ["Reduces target's healing and slows them"] },
+            { name: "TaintedGuard", stats: { health: 300, physicalArmor: 45, abilityHaste: 8 }, effects: ["Reduces attacker's healing and applies bleed"] },
+            { name: "TaintedRounds", stats: { physicalPower: 30, attackSpeed: 25, criticalChance: 20 }, effects: ["Reduces target's healing and deals bonus damage based on health"] },
+            { name: "TaintedScepter", stats: { magicalPower: 70, health: 200, abilityHaste: 10 }, effects: ["Reduces target's healing and deals bonus damage based on stacks"] },
+            { name: "TaintedTotem", stats: { magicalPower: 50, health: 200, baseManaRegeneration: 125, abilityHaste: 10 }, effects: ["Reduces target's healing and grants blighted touch"] },
+            { name: "TaintedTrident", stats: { physicalPower: 40, physicalPenetration: 5, abilityHaste: 15 }, effects: ["Reduces target's healing and deals bonus damage"] },
+            { name: "TectonicMallet", stats: { physicalPower: 50, health: 300 }, effects: ["Deals splash damage and slows targets"] },
+            { name: "Tempest", stats: { magicalPower: 30, health: 100, abilityHaste: 8 }, effects: ["Deals damage to nearby heroes and heals based on damage"] },
+            { name: "TemporalRipper", stats: { physicalPower: 20, abilityHaste: 8 }, effects: ["Reduces cooldowns on basic attacks"] },
+            { name: "TenaciousDrape", stats: { health: 300, tenacity: 15 }, effects: ["Basic health and tenacity item"] },
+            { name: "Terminus", stats: { physicalPower: 55, criticalChance: 20, lifesteal: 15 }, effects: ["Converts excess healing into shield"] },
+            { name: "ThePerforator", stats: { physicalPower: 40, physicalPenetration: 6, abilityHaste: 15 }, effects: ["Slows targets and ignores portion of armor"] },
+            { name: "TitanCrest", stats: { health: 60, physicalArmor: 4, magicalArmor: 2 }, effects: ["Evolves into Goliath Crest"] },
+            { name: "TimeFluxBand", stats: { magicalPower: 极速战靴", mana: 200, abilityHaste: 8 }, effects: ["Marks location and teleports back after duration"] },
+            { name: "Timewarp", stats: { magicalPower: 80, baseManaRegeneration: 175, abilityHaste: 15 }, effects: ["Reduces non-ultimate cooldowns"] },
+            { name: "Tranquility", stats: { health: 100, baseManaRegeneration: 40, goldPerSecond: 1.5 }, effects: ["Heals and grants damage mitigation to nearby heroes"] },
+            { name: "TruesilverBracelet", stats: { magicalPower: 50, health: 200, baseManaRegeneration: 75 }, effects: ["Grants shield and CC immunity"] },
+            { name: "Tunic", stats: { physicalArmor: 10 }, effects: ["Basic physical armor item"] },
+            { name: "Typhoon", stats: { magicalPower: 30, health: 100, abilityHaste: 8 }, effects: ["Grants stacking attack speed and dash"] },
+            { name: "Tyranny", stats: { physicalPower: 40, health: 400, abilityHaste: 10 }, effects: ["Grants movement speed and ability haste on takedowns"] },
+            { name: "UnbrokenWill", stats: { health: 400, magicalArmor: 45, tenacity: 20 }, effects: ["Increases armor temporarily"] },
+            { name: "Vanquisher", stats: { physicalPower: 45, physicalPenetration: 9, criticalChance: 20 }, effects: ["Executes low health targets"] },
+            { name: "Vanguardian", stats: { physicalArmor: 35, magicalArmor: 35, abilityHaste: 10, tenacity: 20 }, effects: ["Grants bonus armor"] },
+            { name: "VigorousAmulet", stats: { health: 200, physicalArmor: 20 }, effects: ["Basic health and armor item"] },
+            { name: "VioletBrooch", stats: { health: 200, abilityHaste: 8 }, effects: ["Basic health and ability haste item"] },
+            { name: "Viper", stats: { physicalPower: 30, attackSpeed: 25, physicalPenetration: 6 }, effects: ["Reduces target's physical armor"] },
+            { name: "VoidHelm", stats: { health: 300, magicalArmor: 60 }, effects: ["Grants magic resistance"] },
+            { name: "WarlockCrest", stats: { magicalPower: 10, abilityHaste: 8 }, effects: ["Evolved crest item for casters"] },
+            { name: "WarriorCrest", stats: { physicalPower: 10, health: 100 }, effects: ["Evolved crest item for warriors"] },
+            { name: "WardenCrest", stats: { health: 120, physicalArmor: 8, magicalArmor: 8 }, effects: ["Evolved crest item for tanks"] },
+            { name: "WildHunt", stats: { physicalPower: 20, attackSpeed: 15 }, effects: ["Evolved from Hunt, provides bonus damage to monsters"] },
+            { name: "WizardCrest", stats: { magicalPower: 12, mana: 100, abilityHaste: 6 }, effects: ["Evolved from Magician Crest"] },
+            { name: "WraithStep", stats: { physicalPower: 25, movementSpeed: 5 }, effects: ["Grants movement speed and phasing"] }
+        ];
+
+        // Populate item selectors
+        function populateItemSelectors() {
+            const slotSelectors = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6'];
+            
+            slotSelectors.forEach(slotId => {
+                const selector = document.getElementById(slotId);
+                
+                // Clear existing options except the first one
+                while (selector.options.length > 1) {
+                    selector.remove(1);
+                }
+                
+                // Add all items to the selector
+                items.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.name;
+                    option.textContent = item.name;
+                    selector.appendChild(option);
+                });
+            });
+            
+            // Add event listeners to update item stats when selected
+            slotSelectors.forEach(slotId => {
+                document.getElementById(slotId).addEventListener('change', function() {
+                    updateItemStats(this.id, this.value);
+                });
+            });
+            
+            // Add event listener for crest slot
+            document.getElementById('crest-slot').addEventListener('change', function() {
+                updateItemStats(this.id, this.value);
+            });
+        }
+
+        // Update item stats display
+        function updateItemStats(slotId, itemName) {
+            const statsElement = document.getElementById(slotId + '-stats');
+            
+            if (!itemName) {
+                statsElement.innerHTML = '';
+                return;
+            }
+            
+            // Find the item
+            let item;
+            if (slotId === 'crest-slot') {
+                // For crest items, we'll create a simple representation
+                item = {
+                    name: itemName,
+                    stats: { physicalPower: 10, abilityHaste: 5 },
+                    effects: ["Crest items provide unique bonuses that evolve throughout the match"]
+                };
+            } else {
+                item = items.find(i => i.name === itemName);
+            }
+            
+            if (!item) return;
+            
+            let statsHTML = '';
+            
+            // Add stats
+            if (item.stats) {
+                for (const [stat, value] of Object.entries(item.stats)) {
+                    statsHTML += `<div>${formatStatName(stat)}: ${value}</div>`;
+                }
+            }
+            
+            // Add effects
+            if (item.effects && item.effects.length > 0) {
+                statsHTML += '<div class="effects"><strong>Effects:</strong><ul>';
+                item.effects.forEach(effect => {
+                    statsHTML += `<li>${effect}</li>`;
+                });
+                statsHTML += '</ul></div>';
+            }
+            
+            statsElement.innerHTML = statsHTML;
+        }
+
+        // Format stat names for display
+        function formatStatName(stat) {
+            const statMap = {
+                physicalPower: "Physical Power",
+                magicalPower: "Magical Power",
+                attackSpeed: "Attack Speed",
+                criticalChance: "Critical Chance",
+                physicalPenetration: "Physical Pen",
+                lifesteal: "Lifesteal",
+                abilityHaste: "Ability Haste",
+                health: "Health",
+                mana: "Mana",
+                movementSpeed: "Movement Speed",
+                physicalArmor: "Physical Armor",
+                magicalArmor: "Magical Armor",
+                baseHealthRegeneration: "Health Regen",
+                baseManaRegeneration: "Mana Regen",
+                tenacity: "Tenacity",
+                omnivamp: "Omnivamp",
+                magicalLifesteal: "Magical Lifesteal",
+                healAndShieldPower: "Heal/Shield Power",
+                goldPerSecond: "Gold per Second",
+                magicalPenetration: "Magical Pen"
+            };
+            
+            return statMap[stat] || stat;
+        }
+
+        // Calculate damage based on selected items and level
+        function calculateDamage() {
+            const level = parseInt(document.getElementById('level').value);
+            const crestItem = document.getElementById('crest-slot').value;
+            const slot1Item = document.getElementById('slot1').value;
+            const slot2Item = document.getElementById('slot2').value;
+            const slot3Item = document.getElementById('slot3').value;
+            const slot4Item = document.getElementById('slot4').value;
+            const slot5Item = document.getElementById('slot5').value;
+            const slot6Item = document.getElementById('slot6').value;
+            
+            // Get base stats for the level
+            const baseStats = twinblastStats[level];
+            
+            // Initialize total stats with base values
+            const totalStats = {
+                physicalPower: baseStats.physicalPower,
+                attackSpeed: baseStats.attackSpeed,
+                criticalChance: baseStats.criticalChance,
+                physicalPenetration: baseStats.physicalPenetration,
+                lifesteal: baseStats.lifesteal,
+                abilityHaste: baseStats.abilityHaste
+            };
+            
+            // Collect active effects
+            const activeEffects = [];
+            
+            // Add stats from items
+            const selectedItems = [crestItem, slot1Item, slot2Item, slot3Item, slot4Item, slot5Item, slot6Item];
+            
+            selectedItems.forEach(itemName => {
+                if (!itemName) return;
+                
+                let item;
+                if (itemName === crestItem) {
+                    // For crest items, we'll create a simple representation
+                    item = {
+                        stats: { physicalPower: 10, abilityHaste: 5 },
+                        effects: ["Crest items provide unique bonuses that evolve throughout the match"]
+                    };
+                } else {
+                    item = items.find(i => i.name === itemName);
+                }
+                
+                if (!item) return;
+                
+                // Add stats
+                if (item.stats) {
+                    for (const [stat, value] of Object.entries(item.stats)) {
+                        if (totalStats[stat] !== undefined) {
+                            totalStats[stat] += value;
+                        }
+                    }
+                }
+                
+                // Add effects
+                if (item.effects) {
+                    item.effects.forEach(effect => {
+                        activeEffects.push(effect);
+                    });
+                }
+            });
+            
+            // Update stat displays
+            document.getElementById('physical-power').textContent = totalStats.physicalPower;
+            document.getElementById('attack-speed').textContent = totalStats.attackSpeed + '%';
+            document.getElementById('critical-chance').textContent = totalStats.criticalChance + '%';
+            document.getElementById('physical-pen').textContent = totalStats.physicalPenetration;
+            document.getElementById('lifesteal').textContent = totalStats.lifesteal + '%';
+            document.getElementById('ability-haste').textContent = totalStats.abilityHaste;
+            
+            // Update active effects
+            const effectsList = document.getElementById('active-effects');
+            effectsList.innerHTML = '';
+            
+            if (activeEffects.length === 0) {
+                effectsList.innerHTML = '<li>No active effects</li>';
+            } else {
+                activeEffects.forEach(effect => {
+                    const li = document.createElement('li');
+                    li.textContent = effect;
+                    effectsList.appendChild(li);
+                });
+            }
+            
+            // Calculate ability damages
+            // Basic Attack (2 projectiles)
+            const basicDamage = Math.round(2 * (baseDamage.basic + (totalStats.physicalPower * abilityScaling.basic)));
+            
+            // Vortex Grenade
+            const grenadeDamage = Math.round(baseDamage.grenade + (totalStats.physicalPower * abilityScaling.grenade));
+            
+            // Vaporize (2 projectiles)
+            const vaporizeDamage = Math.round(2 * (baseDamage.vaporize + (totalStats.physicalPower * abilityScaling.vaporize)));
+            
+            // Rocket Dash (no damage)
+            const dashDamage = 0;
+            
+            // Ventilate (Ultimate)
+            const bulletCount = 30 + (0.1 * totalStats.attackSpeed);
+            const ultimateDamage = Math.round(bulletCount * (baseDamage.ultimate + (totalStats.physicalPower * abilityScaling.ultimate)));
+            
+            // Estimate on-hit damage (simplified)
+            const onHitDamage = Math.round(totalStats.physicalPower * 0.15);
+            
+            // Update damage displays
+            document.getElementById('basic-damage').textContent = basicDamage;
+            document.getElementById('grenade-damage').textContent = grenadeDamage;
+            document.getElementById('vaporize-damage').textContent = vaporizeDamage;
+            document.getElementById('dash-damage').textContent = dashDamage;
+            document.getElementById('ultimate-damage').textContent = ultimateDamage;
+            document.getElementById('onhit-damage').textContent = onHitDamage;
+            
+            // Passive doesn't deal direct damage, but shows the attack speed boost
+            document.getElementById('passive-damage').textContent = "40% AS for 2 attacks";
+        }
+
+        // Initialize the page
+        window.onload = function() {
+            populateItemSelectors();
+            calculateDamage(); // Calculate with default values
+            
+            // Add event listener to level selector
+            document.getElementById('level').addEventListener('change', calculateDamage);
+        };
+    </script>
+</body>
+</html>
