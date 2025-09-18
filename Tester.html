@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pred.gg GraphQL API Explorer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section h2 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .query-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .query-input, .response-output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .query-input h3, .response-output h3 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            background: white;
+        }
+
+        .response-area {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background: white;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .endpoint-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .sample-queries {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .sample-query {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sample-query:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .sample-query h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .sample-query pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+
+        .status {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.loading {
+            background: #cce5ff;
+            color: #0066cc;
+            border: 1px solid #99ccff;
+        }
+
+        @media (max-width: 768px) {
+            .query-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .endpoint-input {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pred.gg GraphQL API Explorer</h1>
+            <p>Discover and query pregame draft information from esports matches</p>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>API Endpoint Configuration</h2>
+                <div class="controls">
+                    <input type="text" id="endpoint" class="endpoint-input" value="https://pred.gg/gql" placeholder="Enter GraphQL endpoint URL">
+                    <button class="btn btn-secondary" onclick="testConnection()">Test Connection</button>
+                </div>
+                <div id="connection-status"></div>
+            </div>
+
+            <div class="query-section">
+                <div class="query-input">
+                    <h3>GraphQL Query</h3>
+                    <textarea id="query" placeholder="Enter your GraphQL query here...">
+# Introspection query to discover schema
+{
+  __schema {
+    types {
+      name
+      description
+      fields {
+        name
+        description
+        type {
+          name
+          kind
+        }
+      }
+    }
+  }
+}</textarea>
+                </div>
+
+                <div class="response-output">
+                    <h3>Response</h3>
+                    <div id="response" class="response-area">Response will appear here...</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-primary" onclick="executeQuery()">Execute Query</button>
+                <button class="btn btn-secondary" onclick="clearResponse()">Clear Response</button>
+                <button class="btn btn-secondary" onclick="formatQuery()">Format Query</button>
+            </div>
+
+            <div class="section">
+                <h2>Sample Queries for Draft Information</h2>
+                <p>Click on any sample query to load it into the query editor. These are common patterns for discovering draft-related data:</p>
+                
+                <div class="sample-queries">
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Schema Introspection</h4>
+                        <pre>{
+  __schema {
+    queryType {
+      fields {
+        name
+        description
+      }
+    }
+  }
+}</pre>
+                    </div>
+
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Find Match Types</h4>
+                        <pre>{
+  __schema {
+    types {
+      name
+      description
+    }
+  }
+}</pre>
+                    </div>
+
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Query Matches (Example)</h4>
+                        <pre>{
+  matches {
+    id
+    status
+    startTime
+    teams {
+      name
+      players {
+        name
+        hero
+      }
+    }
+    draft {
+      picks
+      bans
+      order
+    }
+  }
+}</pre>
+                    </div>
+
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Query Tournaments (Example)</h4>
+                        <pre>{
+  tournaments {
+    id
+    name
+    matches {
+      id
+      teams {
+        name
+        draft {
+          heroSelections
+          pickOrder
+        }
+      }
+    }
+  }
+}</pre>
+                    </div>
+
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Hero/Champion Data (Example)</h4>
+                        <pre>{
+  heroes {
+    id
+    name
+    role
+    pickRate
+    winRate
+  }
+}</pre>
+                    </div>
+
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Draft Predictions (Example)</h4>
+                        <pre>{
+  predictions {
+    matchId
+    draftPredictions {
+      team
+      predictedPicks
+      confidence
+    }
+  }
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Instructions</h2>
+                <ol>
+                    <li><strong>Test Connection:</strong> First, test if the API endpoint is accessible</li>
+                    <li><strong>Schema Discovery:</strong> Use the introspection query to discover available data types and fields</li>
+                    <li><strong>Explore Data:</strong> Based on the schema, craft specific queries for draft information</li>
+                    <li><strong>Common Draft Fields:</strong> Look for fields like <code>picks</code>, <code>bans</code>, <code>draft</code>, <code>heroSelection</code>, <code>pickOrder</code>, <code>champions</code></li>
+                </ol>
+                
+                <p><strong>Note:</strong> This tool helps you explore the API. You may need authentication headers or specific parameters that aren't shown here. Check the API documentation for authentication requirements.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentEndpoint = 'https://pred.gg/gql';
+
+        async function testConnection() {
+            const endpoint = document.getElementById('endpoint').value;
+            const statusDiv = document.getElementById('connection-status');
+            
+            statusDiv.innerHTML = '<div class="status loading">Testing connection...</div>';
+            
+            try {
+                // Try a simple OPTIONS request first
+                const response = await fetch(endpoint, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    statusDiv.innerHTML = '<div class="status success">✓ Connection successful! Endpoint is accessible.</div>';
+                } else {
+                    statusDiv.innerHTML = `<div class="status error">✗ Connection failed. Status: ${response.status}</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">✗ Connection error: ${error.message}</div>`;
+            }
+        }
+
+        async function executeQuery() {
+            const endpoint = document.getElementById('endpoint').value;
+            const query = document.getElementById('query').value;
+            const responseDiv = document.getElementById('response');
+            
+            if (!query.trim()) {
+                responseDiv.textContent = 'Please enter a GraphQL query.';
+                return;
+            }
+            
+            responseDiv.textContent = 'Executing query...';
+            
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: query
+                    })
+                });
+                
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                
+                // If we got schema data, provide helpful analysis
+                if (data.data && data.data.__schema) {
+                    analyzeSchema(data.data.__schema);
+                }
+                
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function analyzeSchema(schema) {
+            const responseDiv = document.getElementById('response');
+            let analysis = '\n\n=== SCHEMA ANALYSIS ===\n';
+            
+            if (schema.types) {
+                const relevantTypes = schema.types.filter(type => 
+                    type.name && (
+                        type.name.toLowerCase().includes('match') ||
+                        type.name.toLowerCase().includes('draft') ||
+                        type.name.toLowerCase().includes('hero') ||
+                        type.name.toLowerCase().includes('champion') ||
+                        type.name.toLowerCase().includes('pick') ||
+                        type.name.toLowerCase().includes('ban') ||
+                        type.name.toLowerCase().includes('tournament') ||
+                        type.name.toLowerCase().includes('game')
+                    )
+                );
+                
+                if (relevantTypes.length > 0) {
+                    analysis += '\nRELEVANT TYPES FOR DRAFT DATA:\n';
+                    relevantTypes.forEach(type => {
+                        analysis += `\n• ${type.name}`;
+                        if (type.description) {
+                            analysis += ` - ${type.description}`;
+                        }
+                        if (type.fields && type.fields.length > 0) {
+                            analysis += '\n  Fields: ' + type.fields.map(f => f.name).join(', ');
+                        }
+                    });
+                } else {
+                    analysis += '\nNo obviously draft-related types found. Try exploring the query root fields.';
+                }
+            }
+            
+            responseDiv.textContent += analysis;
+        }
+
+        function loadQuery(element) {
+            const query = element.querySelector('pre').textContent;
+            document.getElementById('query').value = query;
+        }
+
+        function clearResponse() {
+            document.getElementById('response').textContent = 'Response will appear here...';
+        }
+
+        function formatQuery() {
+            const queryTextarea = document.getElementById('query');
+            let query = queryTextarea.value;
+            
+            try {
+                // Basic GraphQL formatting
+                query = query.replace(/\s+/g, ' ')
+                           .replace(/{\s*/g, '{\n  ')
+                           .replace(/\s*}/g, '\n}')
+                           .replace(/,\s*/g, ',\n  ')
+                           .trim();
+                
+                queryTextarea.value = query;
+            } catch (error) {
+                console.log('Could not format query:', error);
+            }
+        }
+
+        // Set initial endpoint
+        document.getElementById('endpoint').value = currentEndpoint;
+    </script>
+</body>
+</html>
