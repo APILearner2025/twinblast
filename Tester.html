@@ -231,9 +231,9 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
+                    <div class="header">
             <h1>Pred.gg GraphQL API Explorer</h1>
-            <p>Discover and query pregame draft information from esports matches</p>
+            <p>Query detailed match timelines, purchases, damage, and action data</p>
         </div>
 
         <div class="content">
@@ -282,8 +282,8 @@
             </div>
 
             <div class="section">
-                <h2>Sample Queries for Draft Information</h2>
-                <p>Click on any sample query to load it into the query editor. These are common patterns for discovering draft-related data:</p>
+                <h2>Sample Queries for Match Timeline Data</h2>
+                <p>Click on any sample query to load it into the query editor. These target detailed match timeline information including purchases, damage, and player actions:</p>
                 
                 <div class="sample-queries">
                     <div class="sample-query" onclick="loadQuery(this)">
@@ -294,60 +294,11 @@
       fields {
         name
         description
-      }
-    }
-  }
-}</pre>
-                    </div>
-
-                    <div class="sample-query" onclick="loadQuery(this)">
-                        <h4>Find Match Types</h4>
-                        <pre>{
-  __schema {
-    types {
-      name
-      description
-    }
-  }
-}</pre>
-                    </div>
-
-                    <div class="sample-query" onclick="loadQuery(this)">
-                        <h4>Query Matches (Example)</h4>
-                        <pre>{
-  matches {
-    id
-    status
-    startTime
-    teams {
-      name
-      players {
-        name
-        hero
-      }
-    }
-    draft {
-      picks
-      bans
-      order
-    }
-  }
-}</pre>
-                    </div>
-
-                    <div class="sample-query" onclick="loadQuery(this)">
-                        <h4>Query Tournaments (Example)</h4>
-                        <pre>{
-  tournaments {
-    id
-    name
-    matches {
-      id
-      teams {
-        name
-        draft {
-          heroSelections
-          pickOrder
+        args {
+          name
+          type {
+            name
+          }
         }
       }
     }
@@ -356,44 +307,253 @@
                     </div>
 
                     <div class="sample-query" onclick="loadQuery(this)">
-                        <h4>Hero/Champion Data (Example)</h4>
+                        <h4>Find Timeline Types</h4>
                         <pre>{
-  heroes {
-    id
-    name
-    role
-    pickRate
-    winRate
+  __schema {
+    types {
+      name
+      description
+      fields {
+        name
+        description
+      }
+    }
   }
 }</pre>
                     </div>
 
                     <div class="sample-query" onclick="loadQuery(this)">
-                        <h4>Draft Predictions (Example)</h4>
-                        <pre>{
-  predictions {
-    matchId
-    draftPredictions {
-      team
-      predictedPicks
-      confidence
+                        <h4>Match by ID with Timeline</h4>
+                        <pre>query GetMatchTimeline($matchId: ID!) {
+  match(id: $matchId) {
+    id
+    status
+    startTime
+    duration
+    timeline {
+      events {
+        timestamp
+        type
+        player
+        action
+        details
+      }
+    }
+    players {
+      id
+      name
+      hero
+      items {
+        timestamp
+        item
+        action
+      }
+      stats {
+        damage
+        kills
+        deaths
+        assists
+      }
     }
   }
 }</pre>
+                    </div>
+
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Player Actions Timeline</h4>
+                        <pre>query GetPlayerActions($matchId: ID!, $playerId: ID!) {
+  match(id: $matchId) {
+    player(id: $playerId) {
+      name
+      actions {
+        timestamp
+        type
+        target
+        position {
+          x
+          y
+        }
+        damage
+        healing
+        gold
+      }
+      purchases {
+        timestamp
+        item
+        cost
+        gold
+      }
+    }
+  }
+}</pre>
+                    </div>
+
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Damage Timeline</h4>
+                        <pre>query GetDamageTimeline($matchId: ID!) {
+  match(id: $matchId) {
+    damageEvents {
+      timestamp
+      source
+      target
+      amount
+      type
+      ability
+      position
+    }
+    combatLog {
+      timestamp
+      attacker
+      victim
+      damage
+      damageType
+      ability
+    }
+  }
+}</pre>
+                    </div>
+
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Item Purchase Timeline</h4>
+                        <pre>query GetItemTimeline($matchId: ID!) {
+  match(id: $matchId) {
+    itemEvents {
+      timestamp
+      player
+      action
+      item
+      cost
+      goldRemaining
+    }
+    economyTimeline {
+      timestamp
+      player
+      gold
+      netWorth
+    }
+  }
+}</pre>
+                    </div>
+
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Complete Match Data</h4>
+                        <pre>query GetCompleteMatch($matchId: ID!) {
+  match(id: $matchId) {
+    id
+    gameMode
+    duration
+    winner
+    teams {
+      name
+      players {
+        id
+        name
+        hero
+        level
+        kills
+        deaths
+        assists
+        netWorth
+        items
+      }
+    }
+    events {
+      timestamp
+      type
+      data
+    }
+    timeline {
+      interval
+      data {
+        timestamp
+        kills
+        gold
+        experience
+        damage
+      }
+    }
+  }
+}</pre>
+                    </div>
+
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Ability Usage Timeline</h4>
+                        <pre>query GetAbilityTimeline($matchId: ID!) {
+  match(id: $matchId) {
+    abilityEvents {
+      timestamp
+      player
+      ability
+      level
+      target
+      damage
+      cooldown
+      manaCost
+    }
+    spellCasts {
+      timestamp
+      caster
+      spell
+      targetPosition
+      result
+    }
+  }
+}</pre>
+                    </div>
+
+                    <div class="sample-query" onclick="loadQuery(this)">
+                        <h4>Test with Sample Match ID</h4>
+                        <pre>query TestMatchQuery {
+  match(id: "123456") {
+    id
+    status
+    duration
+  }
+}
+
+# Alternative formats to try:
+# match(matchId: "123456")
+# matchById(id: "123456")
+# getMatch(id: "123456")</pre>
                     </div>
                 </div>
             </div>
 
             <div class="section">
-                <h2>Instructions</h2>
+                <h2>Instructions for Timeline Data Discovery</h2>
                 <ol>
-                    <li><strong>Test Connection:</strong> First, test if the API endpoint is accessible</li>
-                    <li><strong>Schema Discovery:</strong> Use the introspection query to discover available data types and fields</li>
-                    <li><strong>Explore Data:</strong> Based on the schema, craft specific queries for draft information</li>
-                    <li><strong>Common Draft Fields:</strong> Look for fields like <code>picks</code>, <code>bans</code>, <code>draft</code>, <code>heroSelection</code>, <code>pickOrder</code>, <code>champions</code></li>
+                    <li><strong>Test Connection:</strong> First, verify the API endpoint is accessible</li>
+                    <li><strong>Schema Discovery:</strong> Use introspection to find timeline-related types and fields</li>
+                    <li><strong>Find Match Query:</strong> Discover how to query matches by ID</li>
+                    <li><strong>Timeline Fields:</strong> Look for fields like:
+                        <ul>
+                            <li><code>timeline</code>, <code>events</code>, <code>actions</code></li>
+                            <li><code>purchases</code>, <code>items</code>, <code>itemEvents</code></li>
+                            <li><code>damage</code>, <code>damageEvents</code>, <code>combatLog</code></li>
+                            <li><code>abilities</code>, <code>spells</code>, <code>abilityEvents</code></li>
+                            <li><code>timestamp</code>, <code>gameTime</code>, <code>matchTime</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Test with Sample ID:</strong> Try different match ID formats to find the correct structure</li>
                 </ol>
                 
-                <p><strong>Note:</strong> This tool helps you explore the API. You may need authentication headers or specific parameters that aren't shown here. Check the API documentation for authentication requirements.</p>
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px; padding: 15px; margin-top: 15px;">
+                    <h4 style="color: #856404; margin-bottom: 10px;">💡 Pro Tips for Timeline Data:</h4>
+                    <ul style="color: #856404; margin-left: 20px;">
+                        <li>Timeline data is usually the most resource-intensive to generate</li>
+                        <li>Some APIs separate timeline data into different endpoints</li>
+                        <li>Look for pagination or time-range parameters for large matches</li>
+                        <li>Check if there are different detail levels (summary vs full timeline)</li>
+                    </ul>
+                </div>
+                
+                <p><strong>Note:</strong> Detailed match timelines require significant data processing. The API might:</p>
+                <ul>
+                    <li>Require special permissions or authentication</li>
+                    <li>Have rate limiting for timeline queries</li>
+                    <li>Only provide timeline data for recent matches</li>
+                    <li>Separate timeline data into multiple queries</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -465,37 +625,111 @@
 
         function analyzeSchema(schema) {
             const responseDiv = document.getElementById('response');
-            let analysis = '\n\n=== SCHEMA ANALYSIS ===\n';
+            let analysis = '\n\n=== TIMELINE DATA ANALYSIS ===\n';
             
             if (schema.types) {
-                const relevantTypes = schema.types.filter(type => 
+                // Look for timeline-related types
+                const timelineTypes = schema.types.filter(type => 
                     type.name && (
-                        type.name.toLowerCase().includes('match') ||
-                        type.name.toLowerCase().includes('draft') ||
-                        type.name.toLowerCase().includes('hero') ||
-                        type.name.toLowerCase().includes('champion') ||
-                        type.name.toLowerCase().includes('pick') ||
-                        type.name.toLowerCase().includes('ban') ||
-                        type.name.toLowerCase().includes('tournament') ||
-                        type.name.toLowerCase().includes('game')
+                        type.name.toLowerCase().includes('timeline') ||
+                        type.name.toLowerCase().includes('event') ||
+                        type.name.toLowerCase().includes('action') ||
+                        type.name.toLowerCase().includes('damage') ||
+                        type.name.toLowerCase().includes('purchase') ||
+                        type.name.toLowerCase().includes('item') ||
+                        type.name.toLowerCase().includes('combat') ||
+                        type.name.toLowerCase().includes('ability') ||
+                        type.name.toLowerCase().includes('spell') ||
+                        type.name.toLowerCase().includes('log')
                     )
                 );
                 
-                if (relevantTypes.length > 0) {
-                    analysis += '\nRELEVANT TYPES FOR DRAFT DATA:\n';
-                    relevantTypes.forEach(type => {
+                // Also look for match-related types that might contain timeline data
+                const matchTypes = schema.types.filter(type =>
+                    type.name && (
+                        type.name.toLowerCase().includes('match') ||
+                        type.name.toLowerCase().includes('game') ||
+                        type.name.toLowerCase().includes('player')
+                    )
+                );
+                
+                if (timelineTypes.length > 0) {
+                    analysis += '\nTIMELINE-RELATED TYPES FOUND:\n';
+                    timelineTypes.forEach(type => {
                         analysis += `\n• ${type.name}`;
                         if (type.description) {
                             analysis += ` - ${type.description}`;
                         }
                         if (type.fields && type.fields.length > 0) {
-                            analysis += '\n  Fields: ' + type.fields.map(f => f.name).join(', ');
+                            const timelineFields = type.fields.filter(f => 
+                                f.name.toLowerCase().includes('timestamp') ||
+                                f.name.toLowerCase().includes('time') ||
+                                f.name.toLowerCase().includes('damage') ||
+                                f.name.toLowerCase().includes('purchase') ||
+                                f.name.toLowerCase().includes('action') ||
+                                f.name.toLowerCase().includes('event')
+                            );
+                            if (timelineFields.length > 0) {
+                                analysis += '\n  Key Fields: ' + timelineFields.map(f => f.name).join(', ');
+                            }
                         }
                     });
-                } else {
-                    analysis += '\nNo obviously draft-related types found. Try exploring the query root fields.';
+                }
+                
+                if (matchTypes.length > 0) {
+                    analysis += '\n\nMATCH-RELATED TYPES:\n';
+                    matchTypes.forEach(type => {
+                        analysis += `\n• ${type.name}`;
+                        if (type.fields && type.fields.length > 0) {
+                            const relevantFields = type.fields.filter(f => 
+                                f.name.toLowerCase().includes('timeline') ||
+                                f.name.toLowerCase().includes('event') ||
+                                f.name.toLowerCase().includes('action') ||
+                                f.name.toLowerCase().includes('purchase') ||
+                                f.name.toLowerCase().includes('damage') ||
+                                f.name.toLowerCase().includes('item') ||
+                                f.name.toLowerCase().includes('ability')
+                            );
+                            if (relevantFields.length > 0) {
+                                analysis += '\n  Timeline Fields: ' + relevantFields.map(f => f.name).join(', ');
+                            }
+                        }
+                    });
+                }
+                
+                if (timelineTypes.length === 0 && matchTypes.length === 0) {
+                    analysis += '\nNo timeline-related types found in schema.';
+                    analysis += '\nTry exploring the root query fields to see available entry points.';
                 }
             }
+            
+            // Look for query root fields that might give access to match data
+            if (schema.queryType && schema.queryType.fields) {
+                const matchQueries = schema.queryType.fields.filter(field =>
+                    field.name.toLowerCase().includes('match') ||
+                    field.name.toLowerCase().includes('game') ||
+                    field.name.toLowerCase().includes('timeline')
+                );
+                
+                if (matchQueries.length > 0) {
+                    analysis += '\n\nAVAILABLE MATCH QUERIES:\n';
+                    matchQueries.forEach(query => {
+                        analysis += `\n• ${query.name}`;
+                        if (query.description) {
+                            analysis += ` - ${query.description}`;
+                        }
+                        if (query.args && query.args.length > 0) {
+                            analysis += `\n  Args: ${query.args.map(arg => `${arg.name}: ${arg.type.name}`).join(', ')}`;
+                        }
+                    });
+                }
+            }
+            
+            analysis += '\n\n=== NEXT STEPS ===';
+            analysis += '\n1. Try querying match data with a sample ID';
+            analysis += '\n2. Look for nested timeline fields within match objects';
+            analysis += '\n3. Check if timeline data requires separate queries';
+            analysis += '\n4. Test different timestamp/time field names';
             
             responseDiv.textContent += analysis;
         }
