@@ -760,7 +760,7 @@
             { name: "SpiritShiv", stats: { physicalPower: 15, mana: 200 }, effects: ["Basic physical power and mana item"] },
             { name: "StoneOfStrength", stats: { physicalPower: 20, health: 150 }, effects: ["Basic physical power and health item"] },
             { name: "StormBreaker", stats: { physicalPower: 50, attackSpeed: 35 }, effects: ["Releases chain lightning on empowered basic attack"] },
-            { name: "SyonicEcho", stats: { physicalPower: 45, physicalPenetration: 7, abilityHaste: 20, lifesteal: 12 }, effects: ["Grants attack speed and resets basic attack cooldown"] },
+            { name: "SyonicEecho", stats: { physicalPower: 45, physicalPenetration: 7, abilityHaste: 20, lifesteal: 12 }, effects: ["Grants attack speed and resets basic attack cooldown"] },
             { name: "TaintedBlade", stats: { physicalPower: 40, health: 275, abilityHaste: 15 }, effects: ["Reduces target's healing and increases damage taken"] },
             { name: "TaintedRounds", stats: { physicalPower: 30, attackSpeed: 25, criticalChance: 20 }, effects: ["Reduces target's healing and deals bonus damage based on health"] },
             { name: "TaintedTrident", stats: { physicalPower: 40, physicalPenetration: 5, abilityHaste: 15 }, effects: ["Reduces target's healing and deals bonus damage"] },
@@ -774,6 +774,33 @@
             { name: "WildHunt", stats: { physicalPower: 20, attackSpeed: 15 }, effects: ["Evolved from Hunt, provides bonus damage to monsters"] },
             { name: "WraithStep", stats: { physicalPower: 25, movementSpeed: 5 }, effects: ["Grants movement speed and phasing"] }
         ];
+
+        // Format stat names for display
+        function formatStatName(stat) {
+            const statNames = {
+                physicalPower: "Physical Power",
+                attackSpeed: "Attack Speed",
+                criticalChance: "Critical Chance",
+                physicalPenetration: "Physical Penetration",
+                lifesteal: "Lifesteal",
+                abilityHaste: "Ability Haste",
+                health: "Health",
+                mana: "Mana",
+                magicalPower: "Magical Power",
+                physicalArmor: "Physical Armor",
+                magicalArmor: "Magical Armor",
+                baseManaRegeneration: "Mana Regen",
+                baseHealthRegeneration: "Health Regen",
+                tenacity: "Tenacity",
+                omnivamp: "Omnivamp",
+                movementSpeed: "Movement Speed",
+                healAndShieldPower: "Heal and Shield Power",
+                magicalLifesteal: "Magical Lifesteal",
+                goldPerSecond: "Gold Per Second"
+            };
+            
+            return statNames[stat] || stat;
+        }
 
         // Populate item selectors
         function populateItemSelectors() {
@@ -805,6 +832,11 @@
             // Add event listener for crest slot
             document.getElementById('crest-slot').addEventListener('change', function() {
                 updateItemStats('crest-slot', this.value);
+            });
+            
+            // Add event listener for level selector
+            document.getElementById('level').addEventListener('change', function() {
+                updateLevelStats(this.value);
             });
         }
 
@@ -871,3 +903,57 @@
             
             statsElement.innerHTML = statsHTML;
         }
+
+        // Update level stats display
+        function updateLevelStats(level) {
+            const statsElement = document.getElementById('level-stats');
+            const levelStats = twinblastStats[level];
+            
+            if (!levelStats) return;
+            
+            let statsHTML = '';
+            
+            // Add stats
+            for (const [stat, value] of Object.entries(levelStats)) {
+                statsHTML += `<div><strong>${formatStatName(stat)}:</strong> ${value}</div>`;
+            }
+            
+            statsElement.innerHTML = statsHTML;
+        }
+
+        // Calculate damage function
+        function calculateDamage() {
+            // This would be the function to calculate all damage values
+            // For now, we'll just set some placeholder values
+            document.getElementById('physical-power').textContent = '150';
+            document.getElementById('attack-speed').textContent = '200%';
+            document.getElementById('critical-chance').textContent = '35%';
+            document.getElementById('physical-pen').textContent = '15';
+            document.getElementById('lifesteal').textContent = '12%';
+            document.getElementById('ability-haste').textContent = '25';
+            
+            document.getElementById('passive-damage').textContent = 'N/A';
+            document.getElementById('basic-damage').textContent = '120';
+            document.getElementById('grenade-damage').textContent = '250';
+            document.getElementById('vaporize-damage').textContent = '210';
+            document.getElementById('dash-damage').textContent = '0';
+            document.getElementById('ultimate-damage').textContent = '450';
+            document.getElementById('onhit-damage').textContent = '75';
+            
+            document.getElementById('active-effects').innerHTML = `
+                <li>Sky Splitter: Dealing bonus damage based on target's current health</li>
+                <li>Omen: Empowering next basic attack</li>
+            `;
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Populate the item selectors
+            populateItemSelectors();
+            
+            // Update level stats for the default level (18)
+            updateLevelStats(18);
+        });
+    </script>
+</body>
+</html>
