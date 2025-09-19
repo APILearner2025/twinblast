@@ -760,7 +760,7 @@
             { name: "SpiritShiv", stats: { physicalPower: 15, mana: 200 }, effects: ["Basic physical power and mana item"] },
             { name: "StoneOfStrength", stats: { physicalPower: 20, health: 150 }, effects: ["Basic physical power and health item"] },
             { name: "StormBreaker", stats: { physicalPower: 50, attackSpeed: 35 }, effects: ["Releases chain lightning on empowered basic attack"] },
-            { name: "SyonicEecho", stats: { physicalPower: 45, physicalPenetration: 7, abilityHaste: 20, lifesteal: 12 }, effects: ["Grants attack speed and resets basic attack cooldown"] },
+            { name: "SyonicEcho", stats: { physicalPower: 45, physicalPenetration: 7, abilityHaste: 20, lifesteal: 12 }, effects: ["Grants attack speed and resets basic attack cooldown"] },
             { name: "TaintedBlade", stats: { physicalPower: 40, health: 275, abilityHaste: 15 }, effects: ["Reduces target's healing and increases damage taken"] },
             { name: "TaintedRounds", stats: { physicalPower: 30, attackSpeed: 25, criticalChance: 20 }, effects: ["Reduces target's healing and deals bonus damage based on health"] },
             { name: "TaintedTrident", stats: { physicalPower: 40, physicalPenetration: 5, abilityHaste: 15 }, effects: ["Reduces target's healing and deals bonus damage"] },
@@ -923,27 +923,120 @@
 
         // Calculate damage function
         function calculateDamage() {
-            // This would be the function to calculate all damage values
-            // For now, we'll just set some placeholder values
-            document.getElementById('physical-power').textContent = '150';
-            document.getElementById('attack-speed').textContent = '200%';
-            document.getElementById('critical-chance').textContent = '35%';
-            document.getElementById('physical-pen').textContent = '15';
-            document.getElementById('lifesteal').textContent = '12%';
-            document.getElementById('ability-haste').textContent = '25';
+            // Get the selected level
+            const level = parseInt(document.getElementById('level').value);
+            const baseStats = twinblastStats[level] || twinblastStats[18];
             
-            document.getElementById('passive-damage').textContent = 'N/A';
-            document.getElementById('basic-damage').textContent = '120';
-            document.getElementById('grenade-damage').textContent = '250';
-            document.getElementById('vaporize-damage').textContent = '210';
+            // Initialize total stats with base stats
+            const totalStats = {
+                physicalPower: baseStats.physicalPower,
+                attackSpeed: baseStats.attackSpeed,
+                criticalChance: baseStats.criticalChance,
+                physicalPenetration: baseStats.physicalPenetration,
+                lifesteal: baseStats.lifesteal,
+                abilityHaste: baseStats.abilityHaste
+            };
+            
+            // Collect all active effects
+            const activeEffects = [];
+            
+            // Process crest item
+            const crestSlot = document.getElementById('crest-slot');
+            const crestItemName = crestSlot.value;
+            
+            if (crestItemName) {
+                const crestStats = {
+                    WarlockCrest: { magicalPower: 10, abilityHaste: 8 },
+                    RogueCrest: { physicalPower: 3, physicalPenetration: 2, abilityHaste: 4 },
+                    OccultCrest: { magicalPower: 8, health: 50, abilityHaste: 4 },
+                    AssassinCrest: { physicalPower: 6, physicalPenetration: 3, abilityHaste: 6 },
+                    SharpshooterCrest: { physicalPower: 8, attackSpeed: 10, lifesteal: 5 },
+                    ChampionCrest: { physicalPower: 8, health: 75, omnivamp: 3 },
+                    WarriorCrest: { physicalPower: 10, health: 100 },
+                    ConsortCrest: { health: 40, baseManaRegeneration: 25, goldPerSecond: 0.25 },
+                    MarksmanCrest: { physicalPower: 4, attackSpeed: 5, lifesteal: 3 },
+                    GuardianCrest: { health: 40, baseHealthRegeneration: 20, goldPerSecond: 0.25 },
+                    TitanCrest: { health: 60, physicalArmor: 4, magicalArmor: 2 },
+                    MagicianCrest: { magicalPower: 8, mana: 80, abilityHaste: 4 },
+                    WizardCrest: { magicalPower: 12, mana: 100, abilityHaste: 6 },
+                    KeeperCrest: { health: 80, baseManaRegeneration: 35, goldPerSecond: 0.35 },
+                    WardenCrest: { health: 120, physicalArmor: 8, magicalArmor: 8 },
+                    GoliathCrest: { health: 90, physicalArmor: 6, magicalArmor: 3 }
+                };
+                
+                const crestItemStats = crestStats[crestItemName] || {};
+                
+                // Add crest stats to total
+                for (const [stat, value] of Object.entries(crestItemStats)) {
+                    if (totalStats.hasOwnProperty(stat)) {
+                        totalStats[stat] += value;
+                    }
+                }
+                
+                activeEffects.push("Crest: " + crestItemName.replace(/([A-Z])/g, ' $1').trim());
+            }
+            
+            // Process regular items
+            for (let i = 1; i <= 6; i++) {
+                const slot = document.getElementById('slot' + i);
+                const itemName = slot.value;
+                
+                if (itemName) {
+                    const item = items.find(item => item.name === itemName);
+                    
+                    if (item && item.stats) {
+                        // Add item stats to total
+                        for (const [stat, value] of Object.entries(item.stats)) {
+                            if (totalStats.hasOwnProperty(stat)) {
+                                totalStats[stat] += value;
+                            }
+                        }
+                        
+                        // Add item effects
+                        if (item.effects && item.effects.length > 0) {
+                            item.effects.forEach(effect => {
+                                activeEffects.push(itemName.replace(/([A-Z])/g, ' $1').trim() + ": " + effect);
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // Calculate ability damages
+            const basicDamage = Math.round(baseDamage.basic + (totalStats.physicalPower * abilityScaling.basic));
+            const grenadeDamage = Math.round(baseDamage.grenade + (totalStats.physicalPower * abilityScaling.grenade));
+            const vaporizeDamage = Math.round(baseDamage.vaporize + (totalStats.physicalPower * abilityScaling.vaporize));
+            const ultimateDamage = Math.round(baseDamage.ultimate + (totalStats.physicalPower * abilityScaling.ultimate));
+            
+            // Update UI with calculated values
+            document.getElementById('physical-power').textContent = Math.round(totalStats.physicalPower);
+            document.getElementById('attack-speed').textContent = Math.round(totalStats.attackSpeed) + '%';
+            document.getElementById('critical-chance').textContent = Math.round(totalStats.criticalChance) + '%';
+            document.getElementById('physical-pen').textContent = Math.round(totalStats.physicalPenetration);
+            document.getElementById('lifesteal').textContent = Math.round(totalStats.lifesteal) + '%';
+            document.getElementById('ability-haste').textContent = Math.round(totalStats.abilityHaste);
+            
+            document.getElementById('passive-damage').textContent = '40% Attack Speed Boost';
+            document.getElementById('basic-damage').textContent = basicDamage + ' per projectile (' + (basicDamage * 2) + ' total)';
+            document.getElementById('grenade-damage').textContent = grenadeDamage;
+            document.getElementById('vaporize-damage').textContent = vaporizeDamage + ' per projectile (' + (vaporizeDamage * 2) + ' total)';
             document.getElementById('dash-damage').textContent = '0';
-            document.getElementById('ultimate-damage').textContent = '450';
-            document.getElementById('onhit-damage').textContent = '75';
+            document.getElementById('ultimate-damage').textContent = ultimateDamage + ' per bullet (approx 30 bullets)';
+            document.getElementById('onhit-damage').textContent = 'Varies based on items';
             
-            document.getElementById('active-effects').innerHTML = `
-                <li>Sky Splitter: Dealing bonus damage based on target's current health</li>
-                <li>Omen: Empowering next basic attack</li>
-            `;
+            // Update active effects
+            const effectsList = document.getElementById('active-effects');
+            effectsList.innerHTML = '';
+            
+            if (activeEffects.length === 0) {
+                effectsList.innerHTML = '<li>No active effects</li>';
+            } else {
+                activeEffects.forEach(effect => {
+                    const li = document.createElement('li');
+                    li.textContent = effect;
+                    effectsList.appendChild(li);
+                });
+            }
         }
 
         // Initialize the page
