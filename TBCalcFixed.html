@@ -251,7 +251,7 @@
                     <option value="WardenCrest">Warden Crest</option>
                     <option value="GoliathCrest">Goliath Crest</option>
                 </select>
-                <div class="item-stats" id="crest-stats"></div>
+                <div class="item-stats" id="crest-slot-stats"></div>
             </div>
             
             <div class="slot">
@@ -782,16 +782,15 @@
             slotSelectors.forEach(slotId => {
                 const selector = document.getElementById(slotId);
                 
-                // Clear existing options except the first one
-                while (selector.options.length > 1) {
-                    selector.remove(1);
-                }
+                // Clear existing options except the first one (default "Select Item")
+                selector.innerHTML = '<option value="">Select Item</option>';
                 
-                // Add all items to the selector
-                items.forEach(item => {
+                // Add all items to the selector, sorted alphabetically
+                const sortedItems = [...items].sort((a, b) => a.name.localeCompare(b.name));
+                sortedItems.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.name;
-                    option.textContent = item.name;
+                    option.textContent = item.name.replace(/([A-Z])/g, ' $1').trim();
                     selector.appendChild(option);
                 });
             });
@@ -799,13 +798,13 @@
             // Add event listeners to update item stats when selected
             slotSelectors.forEach(slotId => {
                 document.getElementById(slotId).addEventListener('change', function() {
-                    updateItemStats(this.id, this.value);
+                    updateItemStats(slotId, this.value);
                 });
             });
             
             // Add event listener for crest slot
             document.getElementById('crest-slot').addEventListener('change', function() {
-                updateItemStats(this.id, this.value);
+                updateItemStats('crest-slot', this.value);
             });
         }
 
@@ -857,199 +856,18 @@
             // Add stats
             if (item.stats) {
                 for (const [stat, value] of Object.entries(item.stats)) {
-                    statsHTML += `<div>${formatStatName(stat)}: ${value}</div>`;
+                    statsHTML += `<div><strong>${formatStatName(stat)}:</strong> ${value}</div>`;
                 }
             }
             
             // Add effects
             if (item.effects && item.effects.length > 0) {
-                statsHTML += '<div class="effects"><strong>Effects:</strong><ul>';
+                statsHTML += '<div style="margin-top: 10px;"><strong>Effects:</strong><ul style="margin: 5px 0; padding-left: 15px;">';
                 item.effects.forEach(effect => {
-                    statsHTML += `<li>${effect}</li>`;
+                    statsHTML += `<li style="margin-bottom: 3px;">${effect}</li>`;
                 });
                 statsHTML += '</ul></div>';
             }
             
             statsElement.innerHTML = statsHTML;
         }
-
-        // Format stat names for display
-        function formatStatName(stat) {
-            const statMap = {
-                physicalPower: "Physical Power",
-                magicalPower: "Magical Power",
-                attackSpeed: "Attack Speed",
-                criticalChance: "Critical Chance",
-                physicalPenetration: "Physical Pen",
-                lifesteal: "Lifesteal",
-                abilityHaste: "Ability Haste",
-                health: "Health",
-                mana: "Mana",
-                movementSpeed: "Movement Speed",
-                physicalArmor: "Physical Armor",
-                magicalArmor: "Magical Armor",
-                baseHealthRegeneration: "Health Regen",
-                baseManaRegeneration: "Mana Regen",
-                tenacity: "Tenacity",
-                omnivamp: "Omnivamp",
-                magicalLifesteal: "Magical Lifesteal",
-                healAndShieldPower: "Heal/Shield Power",
-                goldPerSecond: "Gold per Second",
-                magicalPenetration: "Magical Pen"
-            };
-            
-            return statMap[stat] || stat;
-        }
-
-        // Calculate damage based on selected items and level
-        function calculateDamage() {
-            const level = parseInt(document.getElementById('level').value);
-            const crestItem = document.getElementById('crest-slot').value;
-            const slot1Item = document.getElementById('slot1').value;
-            const slot2Item = document.getElementById('slot2').value;
-            const slot3Item = document.getElementById('slot3').value;
-            const slot4Item = document.getElementById('slot4').value;
-            const slot5Item = document.getElementById('slot5').value;
-            const slot6Item = document.getElementById('slot6').value;
-            
-            // Get base stats for the level
-            const baseStats = twinblastStats[level];
-            
-            // Initialize total stats with base values
-            const totalStats = {
-                physicalPower: baseStats.physicalPower,
-                attackSpeed: baseStats.attackSpeed,
-                criticalChance: baseStats.criticalChance,
-                physicalPenetration: baseStats.physicalPenetration,
-                lifesteal: baseStats.lifesteal,
-                abilityHaste: baseStats.abilityHaste
-            };
-            
-            // Collect active effects
-            const activeEffects = [];
-            
-            // Add stats from items
-            const selectedItems = [
-                { name: crestItem, isCrest: true },
-                { name: slot1Item, isCrest: false },
-                { name: slot2Item, isCrest: false },
-                { name: slot3Item, isCrest: false },
-                { name: slot4Item, isCrest: false },
-                { name: slot5Item, isCrest: false },
-                { name: slot6Item, isCrest: false }
-            ];
-            
-            selectedItems.forEach(selectedItem => {
-                if (!selectedItem.name) return;
-                
-                let item;
-                if (selectedItem.isCrest) {
-                    // For crest items, we'll create appropriate stats
-                    const crestStats = {
-                        WarlockCrest: { magicalPower: 10, abilityHaste: 8 },
-                        RogueCrest: { physicalPower: 3, physicalPenetration: 2, abilityHaste: 4 },
-                        OccultCrest: { magicalPower: 8, health: 50, abilityHaste: 4 },
-                        AssassinCrest: { physicalPower: 6, physicalPenetration: 3, abilityHaste: 6 },
-                        SharpshooterCrest: { physicalPower: 8, attackSpeed: 10, lifesteal: 5 },
-                        ChampionCrest: { physicalPower: 8, health: 75, omnivamp: 3 },
-                        WarriorCrest: { physicalPower: 10, health: 100 },
-                        ConsortCrest: { health: 40, baseManaRegeneration: 25, goldPerSecond: 0.25 },
-                        MarksmanCrest: { physicalPower: 4, attackSpeed: 5, lifesteal: 3 },
-                        GuardianCrest: { health: 40, baseHealthRegeneration: 20, goldPerSecond: 0.25 },
-                        TitanCrest: { health: 60, physicalArmor: 4, magicalArmor: 2 },
-                        MagicianCrest: { magicalPower: 8, mana: 80, abilityHaste: 4 },
-                        WizardCrest: { magicalPower: 12, mana: 100, abilityHaste: 6 },
-                        KeeperCrest: { health: 80, baseManaRegeneration: 35, goldPerSecond: 0.35 },
-                        WardenCrest: { health: 120, physicalArmor: 8, magicalArmor: 8 },
-                        GoliathCrest: { health: 90, physicalArmor: 6, magicalArmor: 3 }
-                    };
-                    
-                    item = {
-                        stats: crestStats[selectedItem.name] || { physicalPower: 10, abilityHaste: 5 },
-                        effects: ["Crest items provide unique bonuses that evolve throughout the match"]
-                    };
-                } else {
-                    item = items.find(i => i.name === selectedItem.name);
-                }
-                
-                if (!item) return;
-                
-                // Add stats
-                if (item.stats) {
-                    for (const [stat, value] of Object.entries(item.stats)) {
-                        if (totalStats[stat] !== undefined) {
-                            totalStats[stat] += value;
-                        }
-                    }
-                }
-                
-                // Add effects
-                if (item.effects) {
-                    item.effects.forEach(effect => {
-                        activeEffects.push(effect);
-                    });
-                }
-            });
-            
-            // Update stat displays
-            document.getElementById('physical-power').textContent = Math.round(totalStats.physicalPower);
-            document.getElementById('attack-speed').textContent = totalStats.attackSpeed + '%';
-            document.getElementById('critical-chance').textContent = totalStats.criticalChance + '%';
-            document.getElementById('physical-pen').textContent = totalStats.physicalPenetration;
-            document.getElementById('lifesteal').textContent = totalStats.lifesteal + '%';
-            document.getElementById('ability-haste').textContent = totalStats.abilityHaste;
-            
-            // Update active effects
-            const effectsList = document.getElementById('active-effects');
-            effectsList.innerHTML = '';
-            
-            if (activeEffects.length === 0) {
-                effectsList.innerHTML = '<li>No active effects</li>';
-            } else {
-                activeEffects.forEach(effect => {
-                    const li = document.createElement('li');
-                    li.textContent = effect;
-                    effectsList.appendChild(li);
-                });
-            }
-            
-            // Calculate ability damages
-            // Basic Attack (2 projectiles)
-            const basicDamage = Math.round(2 * (baseDamage.basic + (totalStats.physicalPower * abilityScaling.basic)));
-            
-            // Vortex Grenade
-            const grenadeDamage = Math.round(baseDamage.grenade + (totalStats.physicalPower * abilityScaling.grenade));
-            
-            // Vaporize (2 projectiles)
-            const vaporizeDamage = Math.round(2 * (baseDamage.vaporize + (totalStats.physicalPower * abilityScaling.vaporize)));
-            
-            // Rocket Dash (no damage)
-            const dashDamage = 0;
-            
-            // Ventilate (Ultimate)
-            const bulletCount = Math.round(30 + (0.1 * totalStats.attackSpeed));
-            const ultimateDamage = Math.round(bulletCount * (baseDamage.ultimate + (totalStats.physicalPower * abilityScaling.ultimate)));
-            
-            // Estimate on-hit damage (simplified)
-            const onHitDamage = Math.round(totalStats.physicalPower * 0.15);
-            
-            // Update damage displays
-            document.getElementById('basic-damage').textContent = basicDamage;
-            document.getElementById('grenade-damage').textContent = grenadeDamage;
-            document.getElementById('vaporize-damage').textContent = vaporizeDamage;
-            document.getElementById('dash-damage').textContent = dashDamage;
-            document.getElementById('ultimate-damage').textContent = ultimateDamage + ' (' + bulletCount + ' bullets)';
-            document.getElementById('onhit-damage').textContent = onHitDamage;
-            
-            // Passive doesn't deal direct damage, but shows the attack speed boost
-            document.getElementById('passive-damage').textContent = "40% AS for 2 attacks";
-        }
-
-        // Initialize the page
-        window.onload = function() {
-            populateItemSelectors();
-            calculateDamage(); // Calculate with default values
-            
-            // Add event listener to level selector
-            document.getElementById('level').addEventListener('change', calculateDamage);
-        };
