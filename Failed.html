@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Player Matches Analysis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #1e1e2f;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #81a1c1;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #summary {
+      background-color: #2a2a3f;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    #summary p {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .stat-card {
+      background-color: #2d2d45;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-title {
+      font-size: 14px;
+      color: #b0b0b0;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 500;
+      color: #81a1c1;
+    }
+
+    #matches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(650px, 1fr));
+      gap: 20px;
+    }
+
+    .match {
+      background-color: #2a2a3f;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .match-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #3e3e5f;
+    }
+
+    .match-id {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .match-result {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    .win {
+      background-color: rgba(46, 125, 50, 0.3);
+      color: #81c784;
+    }
+
+    .loss {
+      background-color: rgba(198, 40, 40, 0.3);
+      color: #e57373;
+    }
+
+    .match a {
+      color: #81a1c1;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .match a:hover {
+      color: #5e81ac;
+      text-decoration: underline;
+    }
+
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .stats-table th {
+      text-align: left;
+      padding: 10px 8px;
+      color: #b0b0b0;
+      font-weight: 500;
+      border-bottom: 1px solid #3e3e5f;
+    }
+
+    .stats-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #2d2d45;
+    }
+
+    .stats-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .hero-cell {
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-cell img {
+      width: 32px;
+      height: 32px;
+      margin-right: 12px;
+      border-radius: 6px;
+    }
+
+    .player-name {
+      font-weight: 500;
+    }
+
+    .kda {
+      display: flex;
+      justify-content: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kills {
+      color: #6e8c6e;
+      font-weight: 500;
+    }
+
+    .deaths {
+      color: #a05b5b;
+      font-weight: 500;
+    }
+
+    .assists {
+      color: #637ea6;
+      font-weight: 500;
+    }
+
+    .slash {
+      color: #e0e0e0;
+      margin: 0 2px;
+    }
+
+    .damage-number {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 18px;
+      color: #81a1c1;
+    }
+
+    .error {
+      background-color: #a05b5b;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .debug-info {
+      background-color: #3a3a5f;
+      color: #e0e0e0;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      font-family: monospace;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .cs-min {
+      color: #d8a0a6;
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      #matches-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-table {
+        font-size: 12px;
+      }
+      
+      .stats-table th, .stats-table td {
+        padding: 8px 4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Team Match Analysis</h1>
+    
+    <div id="summary">
+      <div class="loading">Loading match data...</div>
+    </div>
+    
+    <div id="debug-info" class="debug-info" style="display: none;">
+      Debug information will appear here
+    </div>
+    
+    <div id="matches-grid"></div>
+  </div>
+
+  <script>
+    // Add debug function to capture information
+    const debugInfo = [];
+    function addDebugInfo(message, data = null) {
+      const timestamp = new Date().toLocaleTimeString();
+      let debugMessage = `[${timestamp}] ${message}`;
+      if (data) {
+        debugMessage += `\n${JSON.stringify(data, null, 2)}`;
+      }
+      debugInfo.push(debugMessage);
+      
+      // Update debug info display
+      const debugElement = document.getElementById('debug-info');
+      if (debugElement) {
+        debugElement.textContent = debugInfo.join('\n\n');
+        debugElement.style.display = 'block';
+      }
+      
+      console.log(debugMessage);
+    }
+
+    const endpoint = "https://pred.gg/gql";
+    const playerUuids = [
+      "c11d9836-d777-4752-8c77-8ae2c0d35ab2",
+      "394737c4-f8f3-4c70-8dec-71908e7ff60f",
+      "e9739bfc-6e1f-4baf-9310-30138d486e7a",
+      "8dbcf231-6489-4449-b3c9-d0614779c8b4",
+      "dec11322-332b-4d66-8234-a8bf019f8783"
+    ];
+
+    const DAYS = 20;
+
+    function getAssetPath(hash) {
+      return hash ? `https://pred.gg/assets/${hash}.webp` : '';
+    }
+
+    const query = `
+      query PlayerProfileMatches(
+        $uuid: UUID!
+        $playerMatchesOffset: Int
+        $playerMatchesLimit: Int
+        $playerMatchesFilter: PlayerMatchesFilterInput
+      ) {
+        player(by: { uuid: $uuid }) {
+          matchesPaginated(offset: $playerMatchesOffset, limit: $playerMatchesLimit, filter: $playerMatchesFilter) {
+            results {
+              match {
+                id
+                uuid
+                duration
+                gameMode
+                region
+                winningTeam
+                endTime
+                matchPlayers {
+                  player {
+                    uuid
+                    name
+                  }
+                  team
+                  kills
+                  deaths
+                  assists
+                  heroDamage
+                  totalDamageDealtToStructures
+                  totalDamageDealtToObjectives
+                  minionsKilled
+                  hero {
+                    id
+                    slug
+                    data {
+                      icon
+                      displayName
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    async function fetchGraphQL(query, variables, uuid) {
+      addDebugInfo(`Fetching data for player: ${uuid}`);
+      
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query, variables })
+        });
+        
+        addDebugInfo(`Response status: ${response.status} ${response.statusText}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const json = await response.json();
+        
+        if (json.errors) {
+          addDebugInfo("GraphQL errors:", json.errors);
+          throw new Error(JSON.stringify(json.errors));
+        }
+        
+        addDebugInfo("GraphQL response received successfully");
+        return json.data;
+      } catch (error) {
+        addDebugInfo("Error in fetchGraphQL:", error);
+        throw error;
+      }
+    }
+
+    async function getPlayerMatches(uuid, days) {
+      addDebugInfo(`Getting matches for player ${uuid} for last ${days} days`);
+      
+      const endTime = new Date().toISOString();
+      const startTime = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+      let allMatches = [];
+      let offset = 0;
+      const limit = 50;
+      
+      try {
+        while (true) {
+          const data = await fetchGraphQL(query, {
+            uuid,
+            playerMatchesOffset: offset,
+            playerMatchesLimit: limit,
+            playerMatchesFilter: { timeframe: { startTime, endTime } }
+          }, uuid);
+          
+          if (!data || !data.player || !data.player.matchesPaginated) {
+            addDebugInfo(`No data or matchesPaginated for player ${uuid}`);
+            break;
+          }
+          
+          const results = data.player.matchesPaginated.results;
+          if (!results.length) {
+            addDebugInfo(`No more results for player ${uuid} at offset ${offset}`);
+            break;
+          }
+          
+          addDebugInfo(`Retrieved ${results.length} matches for player ${uuid} at offset ${offset}`);
+          allMatches = allMatches.concat(results);
+          offset += limit;
+          
+          // Add a small delay to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      } catch (error) {
+        addDebugInfo(`Error fetching matches for player ${uuid}:`, error);
+      }
+      
+      addDebugInfo(`Total matches found for player ${uuid}: ${allMatches.length}`);
+      return allMatches;
+    }
+
+    async function getSharedMatches(playerUuids, days) {
+      addDebugInfo(`Getting shared matches for ${playerUuids.length} players`);
+      
+      try {
+        const allPlayerMatches = await Promise.all(playerUuids.map(uuid => getPlayerMatches(uuid, days)));
+        const matchMap = new Map();
+        let totalSearched = 0;
+        
+        for (const matches of allPlayerMatches) {
+          totalSearched += matches.length;
+          for (const { match } of matches) {
+            if (!matchMap.has(match.uuid)) matchMap.set(match.uuid, []);
+            matchMap.get(match.uuid).push(match);
+          }
+        }
+        
+        const sharedMatches = [];
+        for (const [uuid, matches] of matchMap) {
+          if (matches.length === playerUuids.length) {
+            const teams = matches[0].matchPlayers.filter(mp => playerUuids.includes(mp.player.uuid)).map(mp => mp.team);
+            if (teams.every(t => t === teams[0])) sharedMatches.push(matches[0]);
+          }
+        }
+        
+        addDebugInfo(`Found ${sharedMatches.length} shared matches out of ${totalSearched} total matches searched`);
+        return { sharedMatches, totalSearched };
+      } catch (error) {
+        addDebugInfo("Error getting shared matches:", error);
+        throw error;
+      }
+    }
+
+    // Format time from seconds to MM:SS
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Calculate CS per minute
+    function calculateCSperMin(minionsKilled, durationInSeconds) {
+      const minutes = durationInSeconds / 60;
+      return minutes > 0 ? (minionsKilled / minutes).toFixed(1) : "0.0";
+    }
+
+    // Execute the data fetching and display
+    getSharedMatches(playerUuids, DAYS).then(({ sharedMatches, totalSearched }) => {
+      let totalKills = 0, totalDeaths = 0, totalAssists = 0;
+      let totalHeroDamage = 0, totalStructureDamage = 0, totalObjectiveDamage = 0;
+      let totalCreepScore = 0, totalMatchDuration = 0;
+
+      sharedMatches.forEach(match => {
+        totalMatchDuration += match.duration;
+        
+        match.matchPlayers
+          .filter(mp => playerUuids.includes(mp.player.uuid))
+          .forEach(mp => {
+            totalKills += mp.kills;
+            totalDeaths += mp.deaths;
+            totalAssists += mp.assists;
+            totalHeroDamage += mp.heroDamage;
+            totalStructureDamage += mp.totalDamageDealtToStructures;
+            totalObjectiveDamage += mp.totalDamageDealtToObjectives;
+            totalCreepScore += mp.minionsKilled;
+          });
+      });
+
+      // Calculate average CS per minute
+      const totalMinutes = totalMatchDuration / 60;
+      const averageCSperMin = totalMinutes > 0 ? (totalCreepScore / totalMinutes).toFixed(1) : "0.0";
+
+      const summaryContainer = document.getElementById("summary");
+      summaryContainer.innerHTML = `
+        <p>Timeframe: last ${DAYS} days</p>
+        <p>Shared matches found: ${sharedMatches.length}</p>
+        <p>Total matches searched: ${totalSearched}</p>
+        <p>Total K/D/A: ${totalKills}/${totalDeaths}/${totalAssists}</p>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Total Hero Damage</div>
+            <div class="stat-value">${totalHeroDamage.toLocaleString()}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Total Structure Damage</div>
+            <div class="stat-value">${totalStructureDamage.toLocaleString()}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Total Objective Damage</div>
+            <div class="stat-value">${totalObjectiveDamage.toLocaleString()}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Average CS/min</div>
+            <div class="stat-value">${averageCSperMin}</div>
+          </div>
+        </div>
+      `;
+
+      const grid = document.getElementById("matches-grid");
+      
+      if (sharedMatches.length === 0) {
+        grid.innerHTML = '<div class="loading">No shared matches found for the selected players</div>';
+        return;
+      }
+      
+      sharedMatches.forEach(match => {
+        // Determine if the team won
+        const playerTeam = match.matchPlayers.find(mp => 
+          playerUuids.includes(mp.player.uuid)
+        ).team;
+        
+        const isWin = match.winningTeam === playerTeam;
+        const resultClass = isWin ? 'win' : 'loss';
+        const resultIcon = isWin ? 'fa-check-circle' : 'fa-times-circle';
+        const resultText = isWin ? 'VICTORY' : 'DEFEAT';
+
+        const matchDiv = document.createElement("div");
+        matchDiv.className = "match";
+        
+        matchDiv.innerHTML = `
+          <div class="match-header">
+            <div class="match-id">
+              <a href="https://pred.gg/matches/${match.uuid}" target="_blank">${match.uuid}</a>
+              <div>${formatTime(match.duration)} • ${match.gameMode}</div>
+            </div>
+            <div class="match-result ${resultClass}">
+              <i class="fas ${resultIcon}"></i>
+              <span style="margin-left: 6px;">${resultText}</span>
+            </div>
+          </div>
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>K/D/A</th>
+                <th>Hero Dmg</th>
+                <th>Struct Dmg</th>
+                <th>Obj Dmg</th>
+                <th>CS (CS/min)</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        `;
+
+        const tbody = matchDiv.querySelector('tbody');
+        
+        match.matchPlayers
+          .filter(mp => playerUuids.includes(mp.player.uuid))
+          .forEach(mp => {
+            const hero = mp.hero.data;
+            const csPerMin = calculateCSperMin(mp.minionsKilled, match.duration);
+            
+            const row = document.createElement("tr");
+            
+            row.innerHTML = `
+              <td>
+                <div class="hero-cell">
+                  <a href="https://pred.gg/heroes/${mp.hero.slug}" target="_blank">
+                    <img src="${getAssetPath(hero.icon)}" alt="${hero.displayName}">
+                  </a>
+                  <div>
+                    <a class="player-name" href="https://pred.gg/players/${mp.player.uuid}" target="_blank">${mp.player.name}</a>
+                    <div style="font-size: 12px; color: #b0b0b0;">${hero.displayName}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="kda">
+                <span class="kills">${mp.kills}</span>
+                <span class="slash">/</span>
+                <span class="deaths">${mp.deaths}</span>
+                <span class="slash">/</span>
+                <span class="assists">${mp.assists}</span>
+              </td>
+              <td class="damage-number">${mp.heroDamage.toLocaleString()}</td>
+              <td class="damage-number">${mp.totalDamageDealtToStructures.toLocaleString()}</td>
+              <td class="damage-number">${mp.totalDamageDealtToObjectives.toLocaleString()}</td>
+              <td class="damage-number">
+                ${mp.minionsKilled.toLocaleString()}
+                <div class="cs-min">(${csPerMin}/min)</div>
+              </td>
+            `;
+            
+            tbody.appendChild(row);
+          });
+
+        grid.appendChild(matchDiv);
+      });
+    }).catch(err => {
+      document.getElementById("summary").innerHTML = `<div class="error">Error: ${err.message}</div>`;
+      console.error(err);
+    });
+  </script>
+</body>
+
+</html>
